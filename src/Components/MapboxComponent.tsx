@@ -1,8 +1,18 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import MapGL, { Layer, Source } from "react-map-gl";
 import ControlPanel from "./control-panel";
 import { circleLayer, heatmapLayer } from "./map-style";
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapGL, { Layer, Source } from "!react-map-gl";
+import mapboxgl from "mapbox-gl";
+// The following is required to stop "npm build" from transpiling mapbox code.
+// notice the exclamation point in the import.
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass =
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw"; // Set your mapbox token here
