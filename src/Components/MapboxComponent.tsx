@@ -17,19 +17,24 @@ mapboxgl.workerClass =
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw"; // Set your mapbox token here
 
-function filterFeaturesByDay(featureCollection, time) {
+function filterFeaturesByDay(
+  featureCollection: { features: any[] },
+  time: number | string | Date
+) {
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth();
   const day = date.getDate();
-  const features = featureCollection.features.filter((feature) => {
-    const featureDate = new Date(feature.properties.time);
-    return (
-      featureDate.getFullYear() === year &&
-      featureDate.getMonth() === month &&
-      featureDate.getDate() === day
-    );
-  });
+  const features = featureCollection.features.filter(
+    (feature: { properties: { time: string | number | Date } }) => {
+      const featureDate = new Date(feature.properties.time);
+      return (
+        featureDate.getFullYear() === year &&
+        featureDate.getMonth() === month &&
+        featureDate.getDate() === day
+      );
+    }
+  );
   return { type: "FeatureCollection", features };
 }
 
@@ -43,7 +48,7 @@ export default function MapboxComponent() {
     fetch("https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson")
       .then((resp) => resp.json())
       .then((json) => {
-        // Note: In a real application you would do a validation of JSON data before doing anything with it,
+        // TODO: In a real application you would do a validation of JSON data before doing anything with it,
         // but for demonstration purposes we ingore this part here and just trying to select needed data...
         const features = json.features;
         const endTime = features[0].properties.time;
@@ -57,9 +62,11 @@ export default function MapboxComponent() {
   }, []);
 
   const data = useMemo(() => {
-    return allDays
-      ? earthquakes
-      : filterFeaturesByDay(earthquakes, selectedTime);
+    if (allDays) {
+      return earthquakes;
+    } else if (earthquakes) {
+      return filterFeaturesByDay(earthquakes, selectedTime);
+    }
   }, [earthquakes, allDays, selectedTime]);
 
   return (
@@ -99,7 +106,3 @@ export default function MapboxComponent() {
     </div>
   );
 }
-
-// export function renderToDom(container) {
-//   createRoot(container).render(<App />);
-// }

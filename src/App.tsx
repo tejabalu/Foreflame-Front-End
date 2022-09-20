@@ -1,10 +1,11 @@
 import React from "react";
 import MapboxComponent from "./Components/MapboxComponent";
+import { NavBar } from "./Components/NavBar";
 
 function App() {
   return (
     <div className="h-full">
-      <div className="text-3xl font-bold">ForeFlame test</div>
+      <NavBar />
       <MapboxComponent />
     </div>
   );
