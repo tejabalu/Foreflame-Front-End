@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Box, Heading } from "@chakra-ui/react";
 
 function formatTime(time: string | number | Date) {
   const date = new Date(time);
@@ -35,8 +36,8 @@ function ControlPanel(props: {
   };
 
   return (
-    <div className="control-panel">
-      <h3>Heatmap</h3>
+    <Box>
+      <Heading size={"md"}>Map Showing Earthquakes</Heading>
       <p>
         Map showing earthquakes
         <br />
@@ -71,7 +72,7 @@ function ControlPanel(props: {
           earthquakes.geojson
         </a>
       </p>
-    </div>
+    </Box>
   );
 }
 

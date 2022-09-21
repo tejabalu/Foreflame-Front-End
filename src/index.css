@@ -1,8 +1,0 @@
-@tailwind base;
-@layer base {
-    html {
-        @apply text-dark-green;
-    }
-}
-@tailwind components;
-@tailwind utilities;

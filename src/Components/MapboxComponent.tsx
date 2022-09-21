@@ -6,6 +6,7 @@ import { circleLayer, heatmapLayer } from "./map-style";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapGL, { Layer, Source } from "!react-map-gl";
 import mapboxgl from "mapbox-gl";
+import { Box } from "@chakra-ui/react";
 // The following is required to stop "npm build" from transpiling mapbox code.
 // notice the exclamation point in the import.
 // @ts-ignore
@@ -70,8 +71,8 @@ export default function MapboxComponent() {
   }, [earthquakes, allDays, selectedTime]);
 
   return (
-    <div>
-      <div className="h-[50rem]">
+    <Box>
+      <Box height={400}>
         <MapGL
           initialViewState={{
             latitude: 40,
@@ -94,7 +95,7 @@ export default function MapboxComponent() {
             </Source>
           )}
         </MapGL>
-      </div>
+      </Box>
       <ControlPanel
         startTime={timeRange[0]}
         endTime={timeRange[1]}
@@ -103,6 +104,6 @@ export default function MapboxComponent() {
         onChangeTime={selectTime}
         onChangeAllDays={useAllDays}
       />
-    </div>
+    </Box>
   );
 }

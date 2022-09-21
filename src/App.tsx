@@ -1,13 +1,14 @@
 import React from "react";
 import MapboxComponent from "./Components/MapboxComponent";
-import { NavBar } from "./Components/NavBar";
+import NavBar from "./Components/NavBar";
+import { Container } from "@chakra-ui/react";
 
 function App() {
   return (
-    <div className="h-full">
+    <Container maxW="1920px">
       <NavBar />
       <MapboxComponent />
-    </div>
+    </Container>
   );
 }
 
