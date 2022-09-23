@@ -1,5 +1,4 @@
 import logo from "../foreflame_logo.svg";
-
 import { ReactNode } from "react";
 import {
   Box,
@@ -27,19 +26,18 @@ import { IoMdSettings, IoMdLogOut } from "react-icons/io";
 const Links = ["Documentation", "About"];
 
 const NavLink = ({ children }: { children: ReactNode }) => (
-  <Link
-    px={4}
-    py={2}
-    fontWeight={"semibold"}
-    rounded={"md"}
-    bg={"gray.200"}
-    _hover={{
-      bg: "gray.300",
-    }}
-    href={"#"}
-  >
-    {children}
-  </Link>
+  <Box /*TODO: Add hover options*/>
+    <Link
+      px={4}
+      py={2}
+      fontWeight={"semibold"}
+      rounded={"md"}
+      bg={"gray.300"}
+      href={"#"}
+      _hover={{ textDecoration: "None" }}>
+      {children}
+    </Link>
+  </Box>
 );
 
 export default function NavBar() {
@@ -47,7 +45,7 @@ export default function NavBar() {
 
   return (
     <>
-      <Box bg="gray.100" px={4}>
+      <Box px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <IconButton
             size={"md"}
@@ -60,12 +58,7 @@ export default function NavBar() {
             <Image src={logo} w={180} />
           </HStack>
           <HStack alignItems={"center"}>
-            <HStack
-              as={"nav"}
-              spacing={4}
-              display={{ base: "none", md: "flex" }}
-              mr={8}
-            >
+            <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }} mr={8}>
               {Links.map((link) => (
                 <NavLink key={link}>{link}</NavLink>
               ))}
