@@ -1,22 +1,24 @@
 import * as React from "react";
+import { useContext, useEffect } from "react";
 import {
   Box,
-  Flex,
-  Text,
-  HStack,
   Checkbox,
+  ColorModeScript,
+  Flex,
+  HStack,
+  IconButton,
+  Input,
   Slider,
+  SliderFilledTrack,
   SliderThumb,
   SliderTrack,
-  SliderFilledTrack,
-  Input,
-  ColorModeScript,
-  IconButton,
+  Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
-import { useContext, useEffect } from "react";
 import { PlayContext } from "./MapboxComponent";
+import { bottom } from "@popperjs/core";
 
 function formatTime(time: string | number | Date) {
   const date = new Date(time);
@@ -34,32 +36,38 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
 
   return (
     <Flex direction={"row"}>
-      <IconButton
-        {...IconButtonStyles}
-        onClick={() => {
-          props.setSelectedTime(props.startTime);
-        }}
-        aria-label={"Rewind"}
-        icon={<HiRewind />}
-      />
-      <IconButton
-        {...IconButtonStyles}
-        aria-label={"Pause"}
-        onClick={() => {
-          if (setIsPlay) {
-            setIsPlay(!isPlay);
-          }
-        }}
-        icon={isPlay ? <HiPause /> : <HiPlay />}
-      />
-      <IconButton
-        {...IconButtonStyles}
-        onClick={() => {
-          props.setSelectedTime(props.endTime);
-        }}
-        aria-label={"Play"}
-        icon={<HiFastForward />}
-      />
+      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Go to start"}>
+        <IconButton
+          {...IconButtonStyles}
+          onClick={() => {
+            props.setSelectedTime(props.startTime);
+          }}
+          aria-label={"Rewind"}
+          icon={<HiRewind />}
+        />
+      </Tooltip>
+      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Play/Pause"}>
+        <IconButton
+          {...IconButtonStyles}
+          aria-label={"Pause"}
+          onClick={() => {
+            if (setIsPlay) {
+              setIsPlay(!isPlay);
+            }
+          }}
+          icon={isPlay ? <HiPause /> : <HiPlay />}
+        />
+      </Tooltip>
+      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Go to end"}>
+        <IconButton
+          {...IconButtonStyles}
+          onClick={() => {
+            props.setSelectedTime(props.endTime);
+          }}
+          aria-label={"Play"}
+          icon={<HiFastForward />}
+        />
+      </Tooltip>
     </Flex>
   );
 }
@@ -84,13 +92,14 @@ function ControlPanel(props: {
   useEffect(() => {
     console.log("interval exec");
     const interval = setInterval(() => {
-      if (isPlay) {
-        setSelectedTime(startTime + (selectedDay + 1) * day);
-      }
       if (selectedTime >= endTime) {
         if (setIsPlay) {
           setIsPlay(false);
         }
+        setSelectedTime(endTime);
+      }
+      if (isPlay) {
+        setSelectedTime(startTime + (selectedDay + 1) * day);
       }
     }, 200);
     return () => clearInterval(interval);
