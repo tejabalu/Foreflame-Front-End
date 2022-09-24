@@ -15,16 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { PlayContext } from "./MapboxComponent";
-import useInterval from "./Helpers/useInterval";
 
 function formatTime(time: string | number | Date) {
   const date = new Date(time);
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 }
 
-function PlayerControls(props: { able: boolean }) {
+function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime: any; endTime: any }) {
   const { isPlay, setIsPlay } = useContext(PlayContext);
   const IconButtonStyles = {
     color: "white",
@@ -35,7 +34,14 @@ function PlayerControls(props: { able: boolean }) {
 
   return (
     <Flex direction={"row"}>
-      <IconButton {...IconButtonStyles} p={-4} aria-label={"Rewind"} icon={<HiRewind />} />
+      <IconButton
+        {...IconButtonStyles}
+        onClick={() => {
+          props.setSelectedTime(props.startTime);
+        }}
+        aria-label={"Rewind"}
+        icon={<HiRewind />}
+      />
       <IconButton
         {...IconButtonStyles}
         aria-label={"Pause"}
@@ -46,7 +52,14 @@ function PlayerControls(props: { able: boolean }) {
         }}
         icon={isPlay ? <HiPause /> : <HiPlay />}
       />
-      <IconButton {...IconButtonStyles} aria-label={"Play"} icon={<HiFastForward />} />
+      <IconButton
+        {...IconButtonStyles}
+        onClick={() => {
+          props.setSelectedTime(props.endTime);
+        }}
+        aria-label={"Play"}
+        icon={<HiFastForward />}
+      />
     </Flex>
   );
 }
@@ -66,18 +79,22 @@ function ControlPanel(props: {
   const totalDays = Math.round((endTime - startTime) / day);
   const selectedDay = Math.round((selectedTime - startTime) / day);
   const { isPlay, setIsPlay } = useContext(PlayContext);
-  console.log(selectedDay); // TODO: Placed for testing, remove in prod
+  console.log(selectedDay); // TODO: Remove in prod
 
-  useInterval(() => {
-    if (selectedTime > endTime) {
-      if (setIsPlay) {
-        setIsPlay(false);
+  useEffect(() => {
+    console.log("interval exec");
+    const interval = setInterval(() => {
+      if (isPlay) {
+        setSelectedTime(startTime + (selectedDay + 1) * day);
       }
-    }
-    if (isPlay) {
-      setSelectedTime(startTime + (selectedDay + 1) * day);
-    }
-  }, 100);
+      if (selectedTime >= endTime) {
+        if (setIsPlay) {
+          setIsPlay(false);
+        }
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [isPlay, selectedDay, selectedTime, setSelectedTime, startTime]);
 
   return (
     <Box bg={"green"} p={4}>
@@ -99,7 +116,7 @@ function ControlPanel(props: {
             }}>
             Display All Days
           </Checkbox>
-          <PlayerControls able={allDays} />
+          <PlayerControls able={allDays} setSelectedTime={setSelectedTime} startTime={startTime} endTime={endTime} />
         </HStack>
         {/*{formatTime(startTime)} to {formatTime(endTime)}*/}
       </Flex>
