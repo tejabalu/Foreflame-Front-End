@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
@@ -15,6 +15,10 @@ mapboxgl.workerClass =
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw";
 
+export const PlayContext = createContext<
+  Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>
+>({});
+
 function filterFeaturesByDay(featureCollection: { features: any[] }, time: number | string | Date) {
   const date = new Date(time);
   const year = date.getFullYear();
@@ -28,10 +32,11 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
 }
 
 export default function MapboxComponent() {
-  const [allDays, useAllDays] = useState(false);
+  const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
-  const [selectedTime, selectTime] = useState(0);
+  const [selectedTime, setSelectedTime] = useState(0);
   const [earthquakes, setEarthQuakes] = useState(null);
+  const [isPlay, setIsPlay] = useState(false); //
 
   useEffect(() => {
     fetch("https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson")
@@ -44,52 +49,54 @@ export default function MapboxComponent() {
 
         setTimeRange([startTime, endTime]);
         setEarthQuakes(json);
-        selectTime(endTime);
+        setSelectedTime(endTime);
       })
       .catch((err) => console.error("Could not load data", err)); // eslint-disable-line
   }, []);
 
   const data = useMemo(() => {
-    if (allDays) {
+    if (isAllDays) {
       return earthquakes;
     } else if (earthquakes) {
       return filterFeaturesByDay(earthquakes, selectedTime);
     }
-  }, [earthquakes, allDays, selectedTime]);
+  }, [earthquakes, isAllDays, selectedTime]);
 
   return (
-    <Box border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"}>
-      <Box height={500} zIndex={-1}>
-        <MapGL
-          initialViewState={{
-            latitude: 40,
-            longitude: -100,
-            zoom: 3,
-          }}
-          projection="globe"
-          fog={{
-            color: "rgba(255,254,254,0.25)",
-            "horizon-blend": 0.001,
-            // "space-color": "#000000",
-          }}
-          mapStyle="mapbox://styles/mapbox/dark-v10"
-          mapboxAccessToken={MAPBOX_TOKEN}>
-          {data && (
-            <Source type="geojson" data={data}>
-              <Layer {...heatmapLayer} />
-              <Layer {...circleLayer} />
-            </Source>
-          )}
-        </MapGL>
+    <PlayContext.Provider value={{ isPlay, setIsPlay }}>
+      <Box border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
+        <Box height={"full"} zIndex={-1}>
+          <MapGL
+            initialViewState={{
+              latitude: 40,
+              longitude: -100,
+              zoom: 3,
+            }}
+            projection="globe"
+            fog={{
+              color: "rgba(255,254,254,0.25)",
+              "horizon-blend": 0.001,
+              // "space-color": "#000000",
+            }}
+            mapStyle="mapbox://styles/mapbox/dark-v10"
+            mapboxAccessToken={MAPBOX_TOKEN}>
+            {data && (
+              <Source type="geojson" data={data}>
+                <Layer {...heatmapLayer} />
+                <Layer {...circleLayer} />
+              </Source>
+            )}
+          </MapGL>
+        </Box>
+        <ControlPanel
+          startTime={timeRange[0]}
+          endTime={timeRange[1]}
+          selectedTime={selectedTime}
+          allDays={isAllDays}
+          setSelectedTime={setSelectedTime}
+          setIsAllDays={setIsAllDays}
+        />
       </Box>
-      <ControlPanel
-        startTime={timeRange[0]}
-        endTime={timeRange[1]}
-        selectedTime={selectedTime}
-        allDays={allDays}
-        onChangeTime={selectTime}
-        onChangeAllDays={useAllDays}
-      />
-    </Box>
+    </PlayContext.Provider>
   );
 }

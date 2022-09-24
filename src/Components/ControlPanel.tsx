@@ -11,29 +11,73 @@ import {
   SliderFilledTrack,
   Input,
   ColorModeScript,
+  IconButton,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
+import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
+import { useContext } from "react";
+import { PlayContext } from "./MapboxComponent";
+import useInterval from "./Helpers/useInterval";
 
 function formatTime(time: string | number | Date) {
   const date = new Date(time);
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 }
 
+function PlayerControls(props: { able: boolean }) {
+  const { isPlay, setIsPlay } = useContext(PlayContext);
+  const IconButtonStyles = {
+    color: "white",
+    variant: "none",
+    isDisabled: props.able,
+    fontSize: "1.5em",
+  };
+
+  return (
+    <Flex direction={"row"}>
+      <IconButton {...IconButtonStyles} p={-4} aria-label={"Rewind"} icon={<HiRewind />} />
+      <IconButton
+        {...IconButtonStyles}
+        aria-label={"Pause"}
+        onClick={() => {
+          if (setIsPlay) {
+            setIsPlay(!isPlay);
+          }
+        }}
+        icon={isPlay ? <HiPause /> : <HiPlay />}
+      />
+      <IconButton {...IconButtonStyles} aria-label={"Play"} icon={<HiFastForward />} />
+    </Flex>
+  );
+}
+
 function ControlPanel(props: {
   startTime: number;
   endTime: number;
-  allDays: boolean;
-  onChangeTime: React.Dispatch<React.SetStateAction<number>>;
   selectedTime: number;
-  onChangeAllDays: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedTime: React.Dispatch<React.SetStateAction<number>>;
+  allDays: boolean;
+  setIsAllDays: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { startTime, endTime, allDays, onChangeTime, selectedTime, onChangeAllDays } = props;
+  const { startTime, endTime, allDays, setSelectedTime, selectedTime, setIsAllDays } = props;
 
   // console.log(startTimeFormat.toTimeString());
   const day = 24 * 60 * 60 * 1000;
   const totalDays = Math.round((endTime - startTime) / day);
   const selectedDay = Math.round((selectedTime - startTime) / day);
-  console.log(totalDays);
+  const { isPlay, setIsPlay } = useContext(PlayContext);
+  console.log(selectedDay); // TODO: Placed for testing, remove in prod
+
+  useInterval(() => {
+    if (selectedTime > endTime) {
+      if (setIsPlay) {
+        setIsPlay(false);
+      }
+    }
+    if (isPlay) {
+      setSelectedTime(startTime + (selectedDay + 1) * day);
+    }
+  }, 100);
 
   return (
     <Box bg={"green"} p={4}>
@@ -46,14 +90,17 @@ function ControlPanel(props: {
             {formatTime(selectedTime)}
           </Text>
         </HStack>
-        <Checkbox
-          color={"white"}
-          colorScheme={"orange"}
-          onChange={(e) => {
-            onChangeAllDays(e.target.checked);
-          }}>
-          Display All Days
-        </Checkbox>
+        <HStack>
+          <Checkbox
+            color={"white"}
+            colorScheme={"orange"}
+            onChange={(e) => {
+              setIsAllDays(e.target.checked);
+            }}>
+            Display All Days
+          </Checkbox>
+          <PlayerControls able={allDays} />
+        </HStack>
         {/*{formatTime(startTime)} to {formatTime(endTime)}*/}
       </Flex>
 
@@ -66,7 +113,10 @@ function ControlPanel(props: {
         value={selectedDay}
         isDisabled={allDays}
         onChange={(e) => {
-          onChangeTime(startTime + e * day);
+          setSelectedTime(startTime + e * day);
+          if (setIsPlay) {
+            setIsPlay(false);
+          }
         }}>
         <SliderTrack bg="white">
           <Box position="relative" right={10} />
@@ -85,7 +135,7 @@ function ControlPanel(props: {
             placeholder=""
             size="md"
             type="datetime-local"
-            // value={startTimeFormat1}
+            // value={startTimeFormat1} // TODO: format start and end times for date inputs
             css={css`
               ::-webkit-calendar-picker-indicator {
                 background: url(https://cdn-icons-png.flaticon.com/128/3176/3176395.png) center/90% no-repeat;
@@ -119,4 +169,4 @@ function ControlPanel(props: {
   );
 }
 
-export default ControlPanel;
+export default React.memo(ControlPanel);

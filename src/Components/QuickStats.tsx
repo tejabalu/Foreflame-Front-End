@@ -1,8 +1,8 @@
 import { Center, Flex, Image, Stack, StackDivider, Text } from "@chakra-ui/react";
-import temperature from "./logo/temperature.svg";
-import humidity from "./logo/humidity.svg";
-import pressure from "./logo/pressure.svg";
-import wind from "./logo/wind.svg";
+import temperature from "../Assets/QuickStatsLogos/temperature.svg";
+import humidity from "../Assets/QuickStatsLogos/humidity.svg";
+import pressure from "../Assets/QuickStatsLogos/pressure.svg";
+import wind from "../Assets/QuickStatsLogos/wind.svg";
 
 function StatItem(props: { title: string; value: string; icon: any }) {
   return (
