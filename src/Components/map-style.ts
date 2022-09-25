@@ -1,4 +1,4 @@
-import type { HeatmapLayer, CircleLayer } from "react-map-gl";
+import type {HeatmapLayer, CircleLayer} from "react-map-gl";
 
 const MAX_ZOOM_LEVEL = 9;
 
@@ -18,7 +18,8 @@ export const heatmapLayer: HeatmapLayer = {
     "heatmap-color": [
       "interpolate",
       ["linear"],
-      ["heatmap-density"], //TODO: update colors for heatmap
+      ["heatmap-density"],
+      //TODO update colors for heatmap
       0,
       "rgba(33,102,172,0)",
       0.2,
@@ -60,7 +61,8 @@ export const circleLayer: CircleLayer = {
       ["linear"],
       ["get", "mag"],
       1,
-      "rgba(33,102,172,0)", //TODO Update colors Circle Layer
+      "rgba(33,102,172,0)",
+      //TODO Update colors Circle Layer
       2,
       "rgb(103,169,207)",
       3,

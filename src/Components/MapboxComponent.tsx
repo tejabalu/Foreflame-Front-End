@@ -7,14 +7,12 @@ import { circleLayer, heatmapLayer } from "./map-style";
 import MapGL, { Layer, Source } from "!react-map-gl";
 import mapboxgl from "mapbox-gl";
 import { Box } from "@chakra-ui/react";
-import { ViewState } from "./MapMain";
+import { MAPBOX_TOKEN, ViewState } from "./MapMain";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
-
-const MAPBOX_TOKEN = "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw";
 
 export const PlayContext = createContext<
   Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>
@@ -32,11 +30,7 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
   return { type: "FeatureCollection", features };
 }
 
-export default function MapboxComponent(props: {
-  mapViewState: ViewState;
-  mapRef: React.MutableRefObject<undefined>;
-  handleViewPortChange: any;
-}) {
+export default function MapboxComponent(props: { mapViewState: ViewState; handleViewPortChange: any }) {
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
@@ -72,14 +66,16 @@ export default function MapboxComponent(props: {
       <Box border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
         <Box height={"full"} zIndex={-1}>
           <MapGL
+            id={"mapRef"}
             initialViewState={{
-              latitude: 40,
-              longitude: -100,
-              zoom: 3,
+              ...props.mapViewState,
             }}
-            projection="globe"
+            // projection="globe"
             mapStyle="mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob"
-            mapboxAccessToken={MAPBOX_TOKEN}>
+            mapboxAccessToken={MAPBOX_TOKEN}
+            onMove={(e: { viewState: any }) => {
+              props.handleViewPortChange(e.viewState);
+            }}>
             {data && (
               <Source type="geojson" data={data}>
                 <Layer {...heatmapLayer} />

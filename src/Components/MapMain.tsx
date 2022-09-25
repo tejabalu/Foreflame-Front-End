@@ -1,10 +1,12 @@
-import { Box, Flex, Input } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { QuickStats } from "./QuickStats";
 import MapboxComponent from "./MapboxComponent";
-import React, { useCallback, useRef, useState } from "react";
-
-// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-// import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import React, { useCallback, useState } from "react";
+// @ts-ignore
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import mapboxgl from "mapbox-gl";
+import { SearchBox } from "./SearchBox";
 
 export interface ViewState {
   latitude: number;
@@ -12,24 +14,32 @@ export interface ViewState {
   zoom: number;
 }
 
-export function MapMain() {
-  const [MapViewState, setViewState] = useState({ latitude: 40, longitude: -100, zoom: 3 });
-  const mapRef = useRef();
-  const geocoderContainerRef: any = useRef();
+export const MAPBOX_TOKEN =
+  "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw";
 
-  const handleViewportChange = useCallback((newViewport: ViewState) => {
-    setViewState(newViewport);
-    console.log("view port changed");
-  }, []);
+export const geoCoder = new MapboxGeocoder({
+  accessToken: MAPBOX_TOKEN,
+  mapboxgl: mapboxgl,
+});
+
+export function MapMain() {
+  const [MapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
+
+  const handleViewportChange = useCallback(
+    (newViewport: ViewState) => {
+      setViewState(newViewport);
+    },
+    [MapViewState]
+  );
 
   return (
     <>
       <Box flex={1} border={"1px"} borderColor={"gray.400"} borderRadius={"xl"} m={1} p={1}>
-        <Input placeholder={"Search for Location"} />
+        <SearchBox />
       </Box>
       <Flex flex={2.5} flexDirection={"column"} m={1}>
         <QuickStats />
-        <MapboxComponent mapViewState={MapViewState} mapRef={mapRef} handleViewPortChange={handleViewportChange} />
+        <MapboxComponent mapViewState={MapViewState} handleViewPortChange={handleViewportChange} />
       </Flex>
     </>
   );
