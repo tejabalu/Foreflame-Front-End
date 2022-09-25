@@ -34,9 +34,15 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
     fontSize: "1.5em",
   };
 
+  const ToolTipStyles = {
+    bg: "gray.100",
+    color: "gray.800",
+    openDelay: 1000,
+  };
+
   return (
     <Flex direction={"row"}>
-      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Go to start"}>
+      <Tooltip {...ToolTipStyles} label={"Go to start"}>
         <IconButton
           {...IconButtonStyles}
           onClick={() => {
@@ -46,7 +52,7 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
           icon={<HiRewind />}
         />
       </Tooltip>
-      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Play/Pause"}>
+      <Tooltip {...ToolTipStyles} label={"Play/Pause"}>
         <IconButton
           {...IconButtonStyles}
           aria-label={"Pause"}
@@ -58,7 +64,7 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
           icon={isPlay ? <HiPause /> : <HiPlay />}
         />
       </Tooltip>
-      <Tooltip bg={"gray.100"} color={"gray.800"} placement={bottom} label={"Go to end"}>
+      <Tooltip {...ToolTipStyles} label={"Go to end"}>
         <IconButton
           {...IconButtonStyles}
           onClick={() => {

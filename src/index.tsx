@@ -1,13 +1,13 @@
 import "./input.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import "@fontsource/noto-sans";
 import theme from "./theme";
+import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(

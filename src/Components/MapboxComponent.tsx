@@ -7,6 +7,7 @@ import { circleLayer, heatmapLayer } from "./map-style";
 import MapGL, { Layer, Source } from "!react-map-gl";
 import mapboxgl from "mapbox-gl";
 import { Box } from "@chakra-ui/react";
+import { ViewState } from "./MapMain";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =
@@ -31,7 +32,11 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
   return { type: "FeatureCollection", features };
 }
 
-export default function MapboxComponent() {
+export default function MapboxComponent(props: {
+  mapViewState: ViewState;
+  mapRef: React.MutableRefObject<undefined>;
+  handleViewPortChange: any;
+}) {
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
@@ -73,12 +78,7 @@ export default function MapboxComponent() {
               zoom: 3,
             }}
             projection="globe"
-            fog={{
-              color: "rgba(255,254,254,0.25)",
-              "horizon-blend": 0.001,
-              // "space-color": "#000000",
-            }}
-            mapStyle="mapbox://styles/mapbox/dark-v10"
+            mapStyle="mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob"
             mapboxAccessToken={MAPBOX_TOKEN}>
             {data && (
               <Source type="geojson" data={data}>
@@ -86,6 +86,7 @@ export default function MapboxComponent() {
                 <Layer {...circleLayer} />
               </Source>
             )}
+            {/*onViewPortChange={props.handleViewPortChange}*/}
           </MapGL>
         </Box>
         <ControlPanel
