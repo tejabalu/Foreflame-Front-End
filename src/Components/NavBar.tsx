@@ -32,7 +32,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
       py={2}
       fontWeight={"semibold"}
       rounded={"md"}
-      bg={"gray.300"}
+      bg={"gray.200"}
       href={"#"}
       _hover={{ textDecoration: "None" }}>
       {children}
