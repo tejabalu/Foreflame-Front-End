@@ -18,7 +18,6 @@ import {
 import { css } from "@emotion/react";
 import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
 import { PlayContext } from "./MapboxComponent";
-import { bottom } from "@popperjs/core";
 
 function formatTime(time: string | number | Date) {
   const date = new Date(time);
