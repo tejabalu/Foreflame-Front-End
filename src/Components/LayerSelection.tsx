@@ -27,7 +27,7 @@ export function LayerSelection() {
       <Text size={"sm"} px={2} pt={2} color={"white"}>
         Layer Selection
       </Text>
-      <Accordion allowMultiple p={2}>
+      <Accordion defaultIndex={[0, 0, 0]} allowMultiple p={2}>
         <AccordionItem border={"none"} defaultChecked={true}>
           <ToggleButton text="Vegetation" />
           <AccordionPanel pb={4}>

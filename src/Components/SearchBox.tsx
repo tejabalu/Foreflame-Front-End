@@ -21,14 +21,19 @@ export function SearchBox() {
     geoCoder.on("result", (e: any) => {
       console.dir(e);
       console.log(e.result.bbox);
-      console.log("fits");
-      mapRef?.fitBounds(
-        [
-          [e.result.bbox[0], e.result.bbox[1]], // southwestern corner of the bounds
-          [e.result.bbox[2], e.result.bbox[3]], // northeastern corner of the bounds
-        ],
-        { padding: 100, offset: [0, 50], duration: 3000, essential: true }
-      );
+      if (e.result.bbox) {
+        console.log("fits");
+        mapRef?.fitBounds(
+          [
+            [e.result.bbox[0], e.result.bbox[1]], // southwestern corner of the bounds
+            [e.result.bbox[2], e.result.bbox[3]], // northeastern corner of the bounds
+          ],
+          { padding: 100, offset: [0, 50], duration: 3000, essential: true }
+        );
+      } else {
+        console.log("point");
+        mapRef?.flyTo({ center: e.result.center, essential: true });
+      }
     });
   });
   return <div id={"geoCoderClass"}></div>;
