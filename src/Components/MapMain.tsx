@@ -8,6 +8,7 @@ import "./SearchBoxStyles.css";
 import mapboxgl from "mapbox-gl";
 import { SearchBox } from "./SearchBox";
 import { MapProvider } from "react-map-gl";
+import { LayerSelection } from "./LayerSelection";
 
 export interface ViewState {
   latitude: number;
@@ -37,10 +38,19 @@ export function MapMain() {
   return (
     <MapProvider>
       <Flex direction={"column"} flex={1} w={"100%"} borderRadius={"xl"} m={1}>
-        <Box flex={2} p={2} bg={"green"} w={"100%"} rounded={"xl"} mb={1}>
+        <Flex direction={"column"} flex={2} p={2} bg={"green"} w={"100%"} rounded={"xl"} mb={1}>
           <SearchBox />
-        </Box>
-        <Box flex={1} p={2} w={"100%"} rounded={"lg"} border={"1px"} borderColor={"gray.400"} borderRadius={"xl"}>
+          <LayerSelection />
+        </Flex>
+        <Box
+          flex={1}
+          bg={"gray.100"}
+          p={2}
+          w={"100%"}
+          rounded={"lg"}
+          border={"1px"}
+          borderColor={"gray.400"}
+          borderRadius={"xl"}>
           Trends
         </Box>
       </Flex>

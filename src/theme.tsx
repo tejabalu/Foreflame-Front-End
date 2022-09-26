@@ -2,6 +2,7 @@ import { extendTheme, theme as base } from "@chakra-ui/react";
 
 const theme = extendTheme({
   initialColorMode: "light",
+  colorMode: "light",
   useSystemColorMode: false,
   fonts: {
     heading: `Noto Sans, ${base.fonts?.heading} `,

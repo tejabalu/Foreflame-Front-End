@@ -30,7 +30,7 @@
     /*width: 100%;*/
     background-color: transparent;
     margin: 0;
-    height: 50px;
+    height: 70px;
     width: 100%;
     color: white;
     padding: 6px 45px;
@@ -55,7 +55,7 @@
 
 .mapboxgl-ctrl-geocoder--input::placeholder {
     color: white;
-    opacity: 0.7;
+    /*opacity: 0.7;*/
 }
 
 .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--pin-right > * {
@@ -89,8 +89,6 @@
     padding: 0;
     position: absolute;
     background-color: white;
-    /*width: 100%;*/
-    top: 110%; /* fallback */
     top: calc(100% + 6px);
     z-index: 1000;
     overflow: hidden;
@@ -177,7 +175,7 @@
     width: 26px;
     height: 26px;
     margin-top: 5px;
-    margin-right: 0px;
+    margin-right: 0;
     -moz-animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
     -webkit-animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
     animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
@@ -186,8 +184,7 @@
 .mapboxgl-ctrl-geocoder--powered-by {
     display: block;
     float: left;
-    padding: 4px 10px;
-    padding-bottom: 6px;
+    padding: 4px 10px 6px;
     font-size: 10px;
 }
 
@@ -201,6 +198,7 @@
 }
 
 /* Animation */
+/*noinspection ALL*/
 @-webkit-keyframes rotate {
     from {
         -webkit-transform: rotate(0);
@@ -212,6 +210,7 @@
     }
 }
 
+/*noinspection CssUnknownProperty*/
 @keyframes rotate {
     from {
         -webkit-transform: rotate(0);

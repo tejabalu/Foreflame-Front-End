@@ -1,7 +1,6 @@
 import { useMap } from "react-map-gl";
 import React, { useEffect } from "react";
 import { geoCoder } from "./MapMain";
-import { Box } from "@chakra-ui/react";
 
 export function SearchBox() {
   const { mapRef } = useMap();
