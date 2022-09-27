@@ -8,15 +8,14 @@ import MapGL, { Layer, Source } from "!react-map-gl";
 import mapboxgl from "mapbox-gl";
 import { Box } from "@chakra-ui/react";
 import { MAPBOX_TOKEN, ViewState } from "./MapMain";
+import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-export const PlayContext = createContext<
-  Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>
->({});
+export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
 function filterFeaturesByDay(featureCollection: { features: any[] }, time: number | string | Date) {
   const date = new Date(time);

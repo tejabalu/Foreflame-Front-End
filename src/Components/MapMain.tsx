@@ -16,8 +16,7 @@ export interface ViewState {
   zoom: number;
 }
 
-export const MAPBOX_TOKEN =
-  "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw";
+export const MAPBOX_TOKEN = "pk.eyJ1IjoidGVqYWJhbHUiLCJhIjoiY2w4N29tb215MWJnYzN1cG5qYzFsZ29sZyJ9.xb_GFzh_Dv7-tB5QWqpPlw";
 
 export const geoCoder = new MapboxGeocoder({
   accessToken: MAPBOX_TOKEN,
@@ -37,20 +36,12 @@ export function MapMain() {
 
   return (
     <MapProvider>
-      <Flex direction={"column"} flex={1} w={"100%"} borderRadius={"xl"} m={1}>
+      <Flex direction={"column"} flex={1} w={"100%"} borderRadius={"xl"} m={1} h={"full"} alignItems={"flex-start"}>
         <Flex direction={"column"} flex={2} p={2} bg={"green"} w={"100%"} rounded={"xl"} mb={1}>
           <SearchBox />
           <LayerSelection />
         </Flex>
-        <Box
-          flex={1}
-          bg={"gray.100"}
-          p={2}
-          w={"100%"}
-          rounded={"lg"}
-          border={"1px"}
-          borderColor={"gray.400"}
-          borderRadius={"xl"}>
+        <Box overflow={"auto"} flex={1} bg={"gray.100"} p={2} w={"100%"} rounded={"lg"} border={"1px"} borderColor={"gray.400"} borderRadius={"xl"}>
           Trends
         </Box>
       </Flex>

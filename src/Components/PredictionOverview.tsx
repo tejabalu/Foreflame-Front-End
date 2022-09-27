@@ -57,6 +57,9 @@ function PredictionStat({
 
 export function PredictionOverview() {
   //TODO set states for temp, humid, wind, prob
+  let probability = () => {
+    return Math.floor(Math.random() * 100);
+  };
   return (
     <Flex
       flex={1}
@@ -65,13 +68,16 @@ export function PredictionOverview() {
       color={"white"}
       p={4}
       borderRadius={"lg"}
-      justifyContent={"center"}
-      alignItems={"center"}>
+      justifyContent={"flex-start"}
+      alignItems={"center"}
+      overflow={"auto"}>
       <Text mb={4}>5 day Prediction Overview</Text>
       <VStack>
-        <PredictionStat date={"Today"} probability={17} temperature={95} wind={1.44} humidity={23.8} />
-        <PredictionStat date={"Wednesday 10"} probability={53} temperature={99} wind={1.32} humidity={24.9} />
-        <PredictionStat date={"Thursday 11"} probability={81} temperature={105} wind={1.62} humidity={20.1} />
+        <PredictionStat date={"Today"} probability={probability()} temperature={95} wind={1.44} humidity={23.8} />
+        <PredictionStat date={"Wednesday 10"} probability={probability()} temperature={99} wind={1.32} humidity={24.9} />
+        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
+        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
+        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
       </VStack>
     </Flex>
   );
