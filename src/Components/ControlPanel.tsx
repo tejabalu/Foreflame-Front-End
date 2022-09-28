@@ -200,4 +200,4 @@ function ControlPanel(props: {
   );
 }
 
-export default React.memo(ControlPanel);
+export default ControlPanel;

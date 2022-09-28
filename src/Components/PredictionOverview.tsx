@@ -11,7 +11,7 @@ function PredictionStat(props: { date: string; probability: number; temperature:
   } else if (probability < 80) {
     color = "yellow";
   } else {
-    color = "orange";
+    color = "#ff1e00";
   }
 
   return (
@@ -20,7 +20,13 @@ function PredictionStat(props: { date: string; probability: number; temperature:
         {date}
       </Text>
       <Flex direction={"row"} alignItems={"center"}>
-        <Flex direction={"column"} alignItems={"center"} justifyContent={"center"} mr={4} color={color}>
+        <Flex
+          direction={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          mr={4}
+          color={color}
+          fontWeight={probability > 80 ? "semibold" : "md"}>
           <Text fontSize={"3xl"}>{probability}%</Text>
           <Text fontSize={"sm"}>Wildfire</Text>
           <Text fontSize={"sm"}>Possibility</Text>
