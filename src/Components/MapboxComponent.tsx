@@ -6,7 +6,7 @@ import { circleLayer, heatmapLayer } from "./map-style";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapGL, { Layer, Source } from "!react-map-gl";
 import mapboxgl from "mapbox-gl";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { MAPBOX_TOKEN, ViewState } from "./MapMain";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
 // @ts-ignore
@@ -62,8 +62,8 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
 
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
-      <Box border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
-        <Box height={"full"} zIndex={-1}>
+      <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
+        <Box flex={1}>
           <MapGL
             id={"mapRef"}
             initialViewState={{
@@ -95,7 +95,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
           setSelectedTime={setSelectedTime}
           setIsAllDays={setIsAllDays}
         />
-      </Box>
+      </Flex>
     </PlayContext.Provider>
   );
 }

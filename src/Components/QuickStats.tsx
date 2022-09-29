@@ -6,7 +6,7 @@ import wind from "../Assets/QuickStatsLogos/wind.svg";
 
 function StatItem(props: { title: string; value: string; icon: any }) {
   return (
-    <Center w={"full"} h={"20"}>
+    <Center w={"full"}>
       <Flex direction={"column"} alignItems={"center"}>
         <Text fontWeight={"semibold"} fontSize={"sm"} mb={2}>
           {props.title}
