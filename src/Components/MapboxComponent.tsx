@@ -34,7 +34,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
   const [earthquakes, setEarthQuakes] = useState(null);
-  const [isPlay, setIsPlay] = useState(false); //
+  const [isPlay, setIsPlay] = useState(false);
 
   useEffect(() => {
     fetch("https://20.84.59.6:5000/static/earthquakes.geojson")
