@@ -1,4 +1,21 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Checkbox, Text, VStack } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { IoHelpCircleSharp } from "react-icons/io5";
 
 function ToggleButton({ text }: { text: string }) {
   return (
@@ -11,12 +28,30 @@ function ToggleButton({ text }: { text: string }) {
   );
 }
 
+function LayerPopOver() {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Button backgroundColor={"transparent"} colorScheme={"green"} variant={"ghost"}>
+          <IoHelpCircleSharp color="white" fontSize={"1.3em"} />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent backgroundColor={"gray.100"}>
+        <PopoverBody>Checking the items in this list enables the corresponding layers to be displayed in the map interface.</PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function LayerSelection() {
   return (
     <Box borderRadius={"lg"} bg={"graygreen"} flex={1} p={2}>
-      <Text size={"sm"} px={2} pt={2} color={"white"}>
-        Layer Selection
-      </Text>
+      <Flex align={"center"} justifyContent={"space-between"}>
+        <Text size={"sm"} px={2} pt={2} color={"white"}>
+          Layer Selection
+        </Text>
+        <LayerPopOver />
+      </Flex>
       <Accordion defaultIndex={[0, 0, 0]} allowMultiple p={2}>
         <AccordionItem border={"none"} defaultChecked={true}>
           <ToggleButton text="Vegetation" />
