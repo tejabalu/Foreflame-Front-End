@@ -1,14 +1,13 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { QuickStats } from "./QuickStats";
+import { useCallback, useState } from "react";
 import MapboxComponent from "./MapboxComponent";
-import React, { useCallback, useState } from "react";
+import { QuickStats } from "./QuickStats";
 // @ts-ignore
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "./SearchBoxStyles.css";
 import mapboxgl from "mapbox-gl";
-import { SearchBox } from "./SearchBox";
 import { MapProvider } from "react-map-gl";
 import { LayerSelection } from "./LayerSelection";
+import "./SearchBoxStyles.css";
 
 export interface ViewState {
   latitude: number;
@@ -38,7 +37,7 @@ export function MapMain() {
     <MapProvider>
       <Flex direction={"column"} flex={1} w={"100%"} borderRadius={"xl"} m={1} h={"full"} alignItems={"flex-start"}>
         <Flex direction={"column"} flex={2} p={2} bg={"green"} w={"100%"} rounded={"xl"} mb={1}>
-          <SearchBox />
+          {/* <SearchBox /> */}
           <LayerSelection />
         </Flex>
         <Box overflow={"auto"} flex={1} bg={"gray.100"} p={2} w={"100%"} rounded={"lg"} border={"1px"} borderColor={"gray.400"} borderRadius={"xl"}>

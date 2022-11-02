@@ -1,14 +1,4 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Checkbox,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Checkbox, Text, VStack } from "@chakra-ui/react";
 
 function ToggleButton({ text }: { text: string }) {
   return (
@@ -23,7 +13,7 @@ function ToggleButton({ text }: { text: string }) {
 
 export function LayerSelection() {
   return (
-    <Box mt={2} borderRadius={"lg"} bg={"graygreen"} flex={1} p={2}>
+    <Box borderRadius={"lg"} bg={"graygreen"} flex={1} p={2}>
       <Text size={"sm"} px={2} pt={2} color={"white"}>
         Layer Selection
       </Text>

@@ -1,5 +1,3 @@
-import * as React from "react";
-import { useContext, useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -16,7 +14,10 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
+import * as React from "react";
+import { useContext, useEffect } from "react";
 import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
+import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { PlayContext } from "./MapboxComponent";
 
 function formatTime(time: string | number | Date) {
@@ -24,7 +25,7 @@ function formatTime(time: string | number | Date) {
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 }
 
-function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime: any; endTime: any }) {
+function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime: any; endTime: any; selectedTime: any }) {
   const { isPlay, setIsPlay } = useContext(PlayContext);
   const IconButtonStyles = {
     color: "white",
@@ -51,6 +52,17 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
           icon={<HiRewind />}
         />
       </Tooltip>
+      <Tooltip {...ToolTipStyles} label={"One Step Back"}>
+        <IconButton
+          {...IconButtonStyles}
+          aria-label={"Skip back"}
+          onClick={() => {
+            console.log("back clicked");
+            props.setSelectedTime(props.selectedTime - 24 * 60 * 60 * 1000);
+          }}
+          icon={<IoPlaySkipBack />}
+        />
+      </Tooltip>
       <Tooltip {...ToolTipStyles} label={"Play/Pause"}>
         <IconButton
           {...IconButtonStyles}
@@ -63,11 +75,21 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
           icon={isPlay ? <HiPause /> : <HiPlay />}
         />
       </Tooltip>
+      <Tooltip {...ToolTipStyles} label={"One Step Forward"}>
+        <IconButton
+          {...IconButtonStyles}
+          onClick={() => {
+            props.setSelectedTime(props.selectedTime + 24 * 60 * 60 * 1000);
+          }}
+          aria-label={"Play"}
+          icon={<IoPlaySkipForward />}
+        />
+      </Tooltip>
       <Tooltip {...ToolTipStyles} label={"Go to end"}>
         <IconButton
           {...IconButtonStyles}
           onClick={() => {
-            props.setSelectedTime(props.endTime);
+            props.setSelectedTime();
           }}
           aria-label={"Play"}
           icon={<HiFastForward />}
@@ -130,7 +152,7 @@ function ControlPanel(props: {
             }}>
             Display All Days
           </Checkbox>
-          <PlayerControls able={allDays} setSelectedTime={setSelectedTime} startTime={startTime} endTime={endTime} />
+          <PlayerControls able={allDays} setSelectedTime={setSelectedTime} startTime={startTime} endTime={endTime} selectedTime={selectedTime} />
         </HStack>
         {/*{formatTime(startTime)} to {formatTime(endTime)}*/}
       </Flex>
@@ -144,6 +166,7 @@ function ControlPanel(props: {
         value={selectedDay}
         isDisabled={allDays}
         onChange={(e) => {
+          console.log(selectedTime);
           setSelectedTime(startTime + e * day);
           if (setIsPlay) {
             setIsPlay(false);

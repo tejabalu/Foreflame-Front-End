@@ -5,10 +5,11 @@ import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapGL, { Layer, Source } from "!react-map-gl";
-import mapboxgl from "mapbox-gl";
 import { Box, Flex } from "@chakra-ui/react";
-import { MAPBOX_TOKEN, ViewState } from "./MapMain";
+import mapboxgl from "mapbox-gl";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
+import GeocoderControl from "./geocoder-control";
+import { MAPBOX_TOKEN, ViewState } from "./MapMain";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =
@@ -37,7 +38,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
   const [isPlay, setIsPlay] = useState(false);
 
   useEffect(() => {
-    fetch("https://20.84.59.6:5000/static/earthquakes.geojson")
+    fetch("https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson")
       .then((resp) => resp.json())
       .then((json) => {
         // TODO: validate the JSON data first
@@ -84,6 +85,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
                 <Layer {...circleLayer} />
               </Source>
             )}
+            <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
             {/*onViewPortChange={props.handleViewPortChange}*/}
           </MapGL>
         </Box>

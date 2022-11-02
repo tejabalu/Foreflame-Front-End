@@ -1,6 +1,6 @@
-import { HStack, Text, Flex, Center, VStack } from "@chakra-ui/react";
-import { TbTemperature } from "react-icons/tb";
+import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { RiWindyLine } from "react-icons/ri";
+import { TbTemperature } from "react-icons/tb";
 import { WiHumidity } from "react-icons/wi";
 
 function PredictionStat(props: { date: string; probability: number; temperature: number; wind: number; humidity: number }) {
@@ -66,7 +66,7 @@ export function PredictionOverview() {
       justifyContent={"flex-start"}
       alignItems={"center"}
       overflow={"auto"}>
-      <Text mb={4}>5 day Prediction Overview</Text>
+      <Text mb={4}>5 day High Risk Areas</Text>
       <VStack>
         <PredictionStat date={"Today"} probability={probability()} temperature={95} wind={1.44} humidity={23.8} />
         <PredictionStat date={"Wednesday 10"} probability={probability()} temperature={99} wind={1.32} humidity={24.9} />

@@ -1,7 +1,7 @@
 import { Center, Flex, Image, Stack, StackDivider, Text } from "@chakra-ui/react";
-import temperature from "../Assets/QuickStatsLogos/temperature.svg";
 import humidity from "../Assets/QuickStatsLogos/humidity.svg";
 import pressure from "../Assets/QuickStatsLogos/pressure.svg";
+import temperature from "../Assets/QuickStatsLogos/temperature.svg";
 import wind from "../Assets/QuickStatsLogos/wind.svg";
 
 function StatItem(props: { title: string; value: string; icon: any }) {
@@ -36,7 +36,7 @@ export function QuickStats() {
       <StatItem title={"Avg. Temperature (C)"} value={"24.78"} icon={temperature} />
       <StatItem title={"Avg. Humidity (%)"} value={"24.78"} icon={humidity} />
       <StatItem title={"Avg. Wind Speed (m/s)"} value={"24.78"} icon={wind} />
-      <StatItem title={"Avg. Pressure (hPa)"} value={"24.78"} icon={pressure} />
+      <StatItem title={"Avg. Soil Moisture (hPa)"} value={"24.78"} icon={pressure} /> // TODO: change soil moisture icon
     </Stack>
   );
 }
