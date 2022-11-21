@@ -1,40 +1,32 @@
-import logo from "../Assets/foreflame_logo.svg";
-import { ReactNode } from "react";
+import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
+  Circle,
   Flex,
   HStack,
-  Link,
   IconButton,
-  Button,
+  Image,
+  Link,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  useDisclosure,
+  MenuList,
   Stack,
-  Image,
   Text,
+  useDisclosure,
   VStack,
-  Circle,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { ReactNode } from "react";
 import { BsPersonFill } from "react-icons/bs";
+import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import { MdManageAccounts } from "react-icons/md";
-import { IoMdSettings, IoMdLogOut } from "react-icons/io";
 
 const Links = ["Documentation", "About"];
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Box /*TODO: Add hover options*/>
-    <Link
-      px={4}
-      py={2}
-      fontWeight={"semibold"}
-      rounded={"md"}
-      bg={"gray.200"}
-      href={"#"}
-      _hover={{ textDecoration: "None" }}>
+    <Link px={4} py={2} fontWeight={"semibold"} rounded={"md"} bg={"gray.200"} href={"#"} _hover={{ textDecoration: "None" }}>
       {children}
     </Link>
   </Box>
@@ -54,7 +46,7 @@ export default function NavBar() {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={"end"}>
-          <Image src={logo} w={180} />
+          <Image src={"../Assets/foreflame_logo.svg"} w={180} />
         </HStack>
         <HStack alignItems={"center"}>
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }} mr={8}>

@@ -30,7 +30,7 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
   return { type: "FeatureCollection", features };
 }
 
-export default function MapboxComponent(props: { mapViewState: ViewState; handleViewPortChange: any }) {
+export default function MapboxComponent(props: { mapViewState: ViewState; handleViewPortChange: any; mapTheme: String }) {
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
@@ -71,7 +71,9 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
               ...props.mapViewState,
             }}
             // projection="globe"
-            mapStyle="mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob"
+            // mapStyle="mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob"
+            mapStyle={props.mapTheme}
+            // mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
             mapboxAccessToken={MAPBOX_TOKEN}
             onMove={(e: { viewState: any }) => {
               props.handleViewPortChange(e.viewState);

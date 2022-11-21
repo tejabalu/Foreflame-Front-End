@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
-import NavBar from "./Components/NavBar";
 import { Container, Divider, Flex } from "@chakra-ui/react";
-import { MapMain } from "./Components/MapMain";
-import { PredictionResults } from "./Components/PredictionResults";
+import "@fontsource/noto-sans";
+import "mapbox-gl/dist/mapbox-gl.css";
+import dynamic from "next/dynamic";
+import { useEffect } from "react";
+import { MapMain } from "../src/Components/MapMain";
+import NavBar from "../src/Components/NavBar";
+import { PredictionResults } from "../src/Components/PredictionResults";
 
-function App() {
+function MyApp() {
   useEffect(() => {
     localStorage.setItem("chakra-ui-color-mode", "light");
   }, []);
@@ -22,4 +25,6 @@ function App() {
   );
 }
 
-export default App;
+export default dynamic(() => Promise.resolve(MyApp), {
+  ssr: false,
+});
