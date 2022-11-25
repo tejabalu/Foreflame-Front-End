@@ -32,7 +32,8 @@ export function QuickStats() {
       <StatItem title={"Avg. Temperature (C)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/temperature.svg"} />
       <StatItem title={"Avg. Humidity (%)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/humidity.svg"} />
       <StatItem title={"Avg. Wind Speed (m/s)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/wind.svg"} />
-      <StatItem title={"Avg. Soil Moisture (hPa)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/pressure.svg"} /> // TODO: change soil moisture
+      <StatItem title={"Avg. Soil Moisture (hPa)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/pressure.svg"} />
+      {/* TODO: change soil moisture logo */}
       icon
     </Stack>
   );
