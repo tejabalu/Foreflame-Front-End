@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
+import { QuickStats } from "../QuickStats";
 import MapboxComponent from "./MapboxComponent";
-import { QuickStats } from "./QuickStats";
 // @ts-ignore
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import mapboxgl from "mapbox-gl";

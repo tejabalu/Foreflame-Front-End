@@ -1,5 +1,5 @@
+import { useEffect } from "react";
 import { useMap } from "react-map-gl";
-import React, { useEffect } from "react";
 import { geoCoder } from "./MapMain";
 
 export function SearchBox() {

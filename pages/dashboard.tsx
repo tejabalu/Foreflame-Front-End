@@ -3,7 +3,7 @@ import "@fontsource/noto-sans";
 import "mapbox-gl/dist/mapbox-gl.css";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { MapMain } from "../src/Components/MapMain";
+import { MapMain } from "../src/Components/MapBoxComponents/MapMain";
 import NavBar from "../src/Components/NavBar";
 import { PredictionResults } from "../src/Components/PredictionResults";
 
