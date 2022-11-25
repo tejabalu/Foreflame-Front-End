@@ -17,6 +17,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import { ReactNode, useContext } from "react";
 import { BsPersonFill } from "react-icons/bs";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
@@ -48,7 +49,9 @@ export default function NavBar() {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={"end"}>
-          <Image src={"../Assets/foreflame_logo.svg"} w={180} />
+          <NextLink href="/" passHref>
+            <Image src={"../Assets/foreflame_logo.svg"} w={180} />
+          </NextLink>
         </HStack>
         <HStack alignItems={"center"}>
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }} mr={8}>
@@ -73,23 +76,25 @@ export default function NavBar() {
                   <BsPersonFill fill={"#021C11"} />
                 </Circle>
               </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <MdManageAccounts width={"100px"} />
-                  <Text ml={4}>Account</Text>
-                </MenuItem>
-                <MenuItem>
-                  <IoMdSettings />
-                  <Text ml={4}>Preferences</Text>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    logout();
-                  }}>
-                  <IoMdLogOut />
-                  <Text ml={4}>Logout</Text>
-                </MenuItem>
-              </MenuList>
+              {user && (
+                <MenuList>
+                  <MenuItem>
+                    <MdManageAccounts width={"100px"} />
+                    <Text ml={4}>Account</Text>
+                  </MenuItem>
+                  <MenuItem>
+                    <IoMdSettings />
+                    <Text ml={4}>Preferences</Text>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      logout();
+                    }}>
+                    <IoMdLogOut />
+                    <Text ml={4}>Logout</Text>
+                  </MenuItem>
+                </MenuList>
+              )}
             </Menu>
           </Box>
         </HStack>

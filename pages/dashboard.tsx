@@ -12,7 +12,7 @@ function MyApp() {
     localStorage.setItem("chakra-ui-color-mode", "light");
   }, []);
   return (
-    <Container w={"full"} maxW={"container.2xl"} h={"100vh"}>
+    <Container w={"full"} maxW={"container.2xl"} h={"100vh"} backgroundColor={"gray.50"}>
       <Flex h={"full"} direction={"column"} minH={0}>
         <NavBar />
         <Divider borderColor={"gray.600"} />

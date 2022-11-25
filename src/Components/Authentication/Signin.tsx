@@ -29,6 +29,7 @@ export default function SignIn({ setSignInGreeting }: { setSignInGreeting: React
         <Stack align={"center"}>
           <Heading fontSize={"3xl"}>Sign in to your account</Heading>
           <Button
+            colorScheme={"whiteAlpha"}
             onClick={() => {
               console.log("asdf");
               setSignInGreeting(false);

@@ -27,6 +27,7 @@ export default function SignUp({ setSignInGreeting }: { setSignInGreeting: React
         <Stack align={"center"}>
           <Heading fontSize={"3xl"}>Sign up for a new account</Heading>
           <Button
+            colorScheme={"whiteAlpha"}
             onClick={() => {
               console.log("clicked");
               setSignInGreeting(true);
