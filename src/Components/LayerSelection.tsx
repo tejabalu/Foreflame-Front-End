@@ -48,7 +48,7 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
   const StreetMap = "mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob";
   const SatelliteStreetMap = "mapbox://styles/mapbox/satellite-streets-v12";
   const LightMap = "mapbox://styles/mapbox/light-v11";
-  const DarkMap = "mapbox://styles/mapbox/dark-v11";
+  const DarkMap = "mapbox://styles/mapbox/navigation-night-v1";
   const SatelliteMap = "mapbox://styles/mapbox/satellite-v9";
   const TerrainMap = "mapbox://styles/tejabalu/clardo3bu000415tc46tvzwxy";
 
@@ -66,16 +66,19 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
           <ToggleButton text="Map Themes" />
           <AccordionPanel pb={4}>
             <Select
-              placeholder="Select option"
-              color={"white"}
+              // color={"whiteAlpha"}
+              backgroundColor={"rgba(255, 255, 255, 0.43)"}
+              variant={"filled"}
+              fontWeight={"semibold"}
               onChange={(e) => {
-                props.setMapTheme(e.target.value);
+                if (e.target.value) {
+                  props.setMapTheme(e.target.value);
+                }
                 console.log(e.target.value);
               }}>
               <option value={StreetMap}>Streets</option>
               <option value={SatelliteStreetMap}>Satellite Streets</option>
               <option value={TerrainMap}>Terrain</option>
-              <option value={SatelliteMap}>Satellite</option>
               <option value={DarkMap}>Dark</option>
             </Select>
           </AccordionPanel>

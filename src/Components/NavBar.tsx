@@ -17,10 +17,11 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { BsPersonFill } from "react-icons/bs";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import { MdManageAccounts } from "react-icons/md";
+import { UserContext } from "../LoginContext";
 
 const Links = ["Documentation", "About"];
 
@@ -34,6 +35,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function NavBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user, logout } = useContext(UserContext);
 
   return (
     <Box px={4}>
@@ -54,14 +56,16 @@ export default function NavBar() {
               <NavLink key={link}>{link}</NavLink>
             ))}
           </HStack>
-          <VStack>
-            <Text as={"b"} fontSize="20px" mb={-3}>
-              John Doe
-            </Text>
-            <Text as={"b"} fontSize="sm">
-              Fire Analyst
-            </Text>
-          </VStack>
+          {user && (
+            <VStack>
+              <Text as={"b"} fontSize="20px" mb={-3}>
+                {user.displayName}
+              </Text>
+              <Text as={"b"} fontSize="sm">
+                Fire Analyst
+              </Text>
+            </VStack>
+          )}
           <Box pl={2}>
             <Menu>
               <MenuButton as={Button} variant={"link"} cursor={"pointer"}>
@@ -78,7 +82,10 @@ export default function NavBar() {
                   <IoMdSettings />
                   <Text ml={4}>Preferences</Text>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    logout();
+                  }}>
                   <IoMdLogOut />
                   <Text ml={4}>Logout</Text>
                 </MenuItem>

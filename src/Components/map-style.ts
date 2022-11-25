@@ -1,4 +1,4 @@
-import type { HeatmapLayer, CircleLayer } from "react-map-gl";
+import type { CircleLayer, HeatmapLayer } from "react-map-gl";
 
 const MAX_ZOOM_LEVEL = 9;
 
@@ -77,5 +77,16 @@ export const circleLayer: CircleLayer = {
     "circle-stroke-width": 1,
     // Transition from heatmap to circle layer by zoom level
     "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+  },
+};
+
+const apiKey = "AAPK543fd023a95f482497db0d8de1d725c6q3y8j1Q9TPDgB8a2Lt10uStdx2eyKjyBnt7iq6ypiYLRzDAmG8tnZ62gSj4GB97G";
+const basemapEnum = "ArcGIS:Imagery";
+
+export const arcGisLayer: any = {
+  type: "fill",
+  source: {
+    type: "raster",
+    tiles: "https://basemaps-api.arcgis.com/arcgis/rest/services/styles/${basemapEnum}?type=style&token=${apiKey}",
   },
 };
