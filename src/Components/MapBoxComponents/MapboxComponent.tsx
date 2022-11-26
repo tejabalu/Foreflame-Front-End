@@ -1,13 +1,14 @@
 import * as React from "react";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import MapGL, { Layer, Source } from "!react-map-gl";
+import Map, { Layer, Source } from "!react-map-gl";
 import { Box, Flex } from "@chakra-ui/react";
 import mapboxgl from "mapbox-gl";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
+import DrawControl from "./draw-control";
 import GeocoderControl from "./geocoder-control";
 import { MAPBOX_TOKEN, ViewState } from "./MapMain";
 // @ts-ignore
@@ -15,6 +16,8 @@ import { MAPBOX_TOKEN, ViewState } from "./MapMain";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
 export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
@@ -61,35 +64,68 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
     }
   }, [earthquakes, isAllDays, selectedTime]);
 
+  const [features, setFeatures] = useState({});
+
+  const onUpdate = useCallback((e) => {
+    setFeatures((currFeatures) => {
+      const newFeatures: any = { ...currFeatures };
+      for (const f of e.features) {
+        newFeatures[f.id] = f;
+      }
+      console.log(newFeatures);
+      return newFeatures;
+    });
+    return console.log(features);
+  }, []);
+
+  const onDelete = useCallback((e) => {
+    setFeatures((currFeatures) => {
+      const newFeatures: any = { ...currFeatures };
+      for (const f of e.features) {
+        delete newFeatures[f.id];
+      }
+      return newFeatures;
+    });
+  }, []);
+
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
       <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
         <Box flex={1}>
-          <MapGL
+          <Map
             id={"mapRef"}
             initialViewState={{
               ...props.mapViewState,
             }}
-            // projection="globe"
-            // mapStyle="mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob"
             mapStyle={props.mapTheme}
-            // mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
             mapboxAccessToken={MAPBOX_TOKEN}
             onMove={(e: { viewState: any }) => {
               props.handleViewPortChange(e.viewState);
             }}>
+            <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
             <GeolocateControl position="bottom-left" />
             <FullscreenControl position="bottom-left" />
             <NavigationControl position="bottom-left" />
+            <DrawControl
+              position="bottom-left"
+              displayControlsDefault={false}
+              controls={{
+                polygon: true,
+                trash: true,
+              }}
+              defaultMode="draw_polygon"
+              onCreate={onUpdate}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
+
             {data && (
               <Source type="geojson" data={data}>
                 <Layer {...heatmapLayer} />
                 <Layer {...circleLayer} />
               </Source>
             )}
-            <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
-            {/*onViewPortChange={props.handleViewPortChange}*/}
-          </MapGL>
+          </Map>
         </Box>
         <ControlPanel
           startTime={timeRange[0]}
