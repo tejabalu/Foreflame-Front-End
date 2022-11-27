@@ -18,7 +18,7 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { UserContext } from "../../LoginContext";
 
@@ -69,19 +69,23 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
 
   // Map drawing stuff
 
-  // TODO: this doesn't work when the page is reloaded.
-  // useEffect(() => {
-  // if (!user) router.push("/");
-  // }, [user]);
-
-  const [draw, setDraw] = useState();
   const [drawFeatures, setDrawFeatures] = useState({});
   const { colRef, user } = useContext(UserContext);
   const router = useRouter();
 
+  // TODO: this data is being updated again in the draw-control.ts
+  // Pass this data to that function instead of making 2 db calls.
   useEffect(() => {
-    console.log(draw, "setDraw test");
-  }, [draw]);
+    if (colRef) {
+      getDoc(doc(colRef, "drawFeatures")).then((docSnap) => {
+        const downloaded = docSnap.data();
+        if (downloaded) {
+          const prevFeatures = JSON.parse(downloaded.data);
+          setDrawFeatures(prevFeatures);
+        }
+      });
+    }
+  }, [colRef]);
 
   const onUpdate = (e: any) => {
     console.log(colRef, "map colref test");
@@ -100,6 +104,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
             console.log(err);
           });
       }
+      console.log(newFeatures);
       return newFeatures;
     });
   };
@@ -120,6 +125,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
             console.log(err);
           });
       }
+      console.log(newFeatures);
       return newFeatures;
     });
   };
@@ -155,7 +161,6 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
               onUpdate={onUpdate}
               onDelete={onDelete}
               colRef={colRef}
-              setDraw={setDraw}
             />
 
             {data && (

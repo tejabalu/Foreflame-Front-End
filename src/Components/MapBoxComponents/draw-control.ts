@@ -11,22 +11,27 @@ type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   onUpdate?: (evt: { features: object[]; action: string }) => void;
   onDelete?: (evt: { features: object[] }) => void;
   colRef?: any;
-  setDraw: any;
 };
 
 function DrawControl(props: DrawControlProps) {
   useControl<MapboxDraw>(
     () => {
       const draw = new MapboxDraw(props);
-      console.log(props.colRef, "drawing colref test");
-      getDoc(doc(props.colRef, "drawFeatures")).then((docSnap) => {
-        const downloaded = docSnap.data();
-        if (downloaded) {
-          const prevFeatures = JSON.parse(downloaded.data);
-          console.log(prevFeatures, "firebase object downlaod test");
-        }
-      });
-      props.setDraw(draw);
+      getDoc(doc(props.colRef, "drawFeatures"))
+        .then((docSnap) => {
+          const downloaded = docSnap.data();
+          if (downloaded) {
+            const prevFeatures = JSON.parse(downloaded.data);
+            for (const f in prevFeatures) {
+              console.log(prevFeatures[f]);
+              draw.add(prevFeatures[f]);
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       return draw;
     },
 
