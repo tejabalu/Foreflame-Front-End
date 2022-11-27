@@ -1,10 +1,10 @@
 import * as React from "react";
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import Map, { Layer, Source } from "!react-map-gl";
+import MapGL, { Layer, Source } from "!react-map-gl";
 import { Box, Flex } from "@chakra-ui/react";
 import mapboxgl from "mapbox-gl";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
@@ -18,6 +18,9 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import { doc, setDoc } from "firebase/firestore";
+import { useRouter } from "next/router";
+import { UserContext } from "../../LoginContext";
 
 export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
@@ -64,35 +67,68 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
     }
   }, [earthquakes, isAllDays, selectedTime]);
 
-  const [features, setFeatures] = useState({});
+  // Map drawing stuff
 
-  const onUpdate = useCallback((e) => {
-    setFeatures((currFeatures) => {
+  // TODO: this doesn't work when the page is reloaded.
+  // useEffect(() => {
+  // if (!user) router.push("/");
+  // }, [user]);
+
+  const [draw, setDraw] = useState();
+  const [drawFeatures, setDrawFeatures] = useState({});
+  const { colRef, user } = useContext(UserContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(draw, "setDraw test");
+  }, [draw]);
+
+  const onUpdate = (e: any) => {
+    console.log(colRef, "map colref test");
+    setDrawFeatures((currFeatures) => {
       const newFeatures: any = { ...currFeatures };
       for (const f of e.features) {
         newFeatures[f.id] = f;
       }
-      console.log(newFeatures);
+      console.log(JSON.stringify(newFeatures));
+      if (colRef) {
+        setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
+          .then((e) => {
+            console.log("Draw features written");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
       return newFeatures;
     });
-    return console.log(features);
-  }, []);
+  };
 
-  const onDelete = useCallback((e) => {
-    setFeatures((currFeatures) => {
+  const onDelete = (e: any) => {
+    setDrawFeatures((currFeatures) => {
       const newFeatures: any = { ...currFeatures };
       for (const f of e.features) {
         delete newFeatures[f.id];
       }
+      console.log(JSON.parse(JSON.stringify(newFeatures)));
+      if (colRef) {
+        setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
+          .then((e) => {
+            console.log("Draw features written");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
       return newFeatures;
     });
-  }, []);
+  };
 
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
       <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
         <Box flex={1}>
-          <Map
+          <MapGL
             id={"mapRef"}
             initialViewState={{
               ...props.mapViewState,
@@ -106,6 +142,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
             <GeolocateControl position="bottom-left" />
             <FullscreenControl position="bottom-left" />
             <NavigationControl position="bottom-left" />
+
             <DrawControl
               position="bottom-left"
               displayControlsDefault={false}
@@ -117,6 +154,8 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
               onCreate={onUpdate}
               onUpdate={onUpdate}
               onDelete={onDelete}
+              colRef={colRef}
+              setDraw={setDraw}
             />
 
             {data && (
@@ -125,7 +164,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
                 <Layer {...circleLayer} />
               </Source>
             )}
-          </Map>
+          </MapGL>
         </Box>
         <ControlPanel
           startTime={timeRange[0]}

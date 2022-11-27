@@ -1,5 +1,4 @@
 import { Container, Divider, Flex } from "@chakra-ui/react";
-import "@fontsource/noto-sans";
 import "mapbox-gl/dist/mapbox-gl.css";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";

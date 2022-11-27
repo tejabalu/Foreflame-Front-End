@@ -8,11 +8,13 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
+import { collection, CollectionReference, doc, DocumentData, getDocs, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { auth } from "./firebase-config";
+import { auth, db } from "./firebase-config";
 
 interface UserContextTypes {
   user: User | null;
+  colRef: CollectionReference<DocumentData> | null;
   registerWithEmail(name: string, email: string, password: string): Promise<void>;
   login(email: string, password: string): Promise<void>;
   loginWithGoogle(): Promise<void>;
@@ -21,6 +23,7 @@ interface UserContextTypes {
 
 const UserContextDefault: UserContextTypes = {
   user: null,
+  colRef: null,
   registerWithEmail: async () => {},
   login: async () => {},
   loginWithGoogle: async () => {},
@@ -31,16 +34,19 @@ export const UserContext = React.createContext<UserContextTypes>(UserContextDefa
 
 export const UserProvider = ({ children }: { children: any }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [colRef, setColRef] = useState<CollectionReference<DocumentData> | null>(null);
 
   const AuthChange = () => {
     onAuthStateChanged(auth, (currentUser) => {
-      console.log("auth changed");
       if (currentUser) {
         console.log(currentUser, " logged in.");
         setUser(currentUser);
+        setColRef(collection(db, currentUser.uid.toString()));
+        if (colRef) addUserToFirestore(colRef);
       } else {
         console.log("Firebase logged out.");
         setUser(null);
+        setColRef(null);
       }
     });
   };
@@ -61,6 +67,27 @@ export const UserProvider = ({ children }: { children: any }) => {
       })
       .catch((err) => {
         console.log(err);
+        alert("The user with this email already exists.");
+      });
+  };
+
+  const addUserToFirestore = async (colRef: CollectionReference<DocumentData>) => {
+    getDocs(colRef)
+      .then((querySnap) => {
+        if (querySnap.empty) {
+          setDoc(doc(colRef, "drawFeatures"), {})
+            .then((e) => {
+              console.log("Writing user data.");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          console.log("User aready has data.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -75,7 +102,6 @@ export const UserProvider = ({ children }: { children: any }) => {
   };
 
   const logout = async () => {
-    console.log("logout clicked");
     signOut(auth)
       .then(() => {
         AuthChange();
@@ -101,6 +127,7 @@ export const UserProvider = ({ children }: { children: any }) => {
     <UserContext.Provider
       value={{
         user,
+        colRef,
         registerWithEmail,
         login,
         logout,

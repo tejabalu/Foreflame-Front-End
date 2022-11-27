@@ -1,4 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import "@fontsource/noto-sans";
 import { AppProps } from "next/app";
 import React from "react";
 import "../src/Components/SearchBoxStyles.css";
@@ -12,10 +13,10 @@ interface CustomPageProps {}
 
 export default function MyApp({ Component, pageProps }: AppProps<CustomPageProps>) {
   return (
-    <ChakraProvider theme={theme}>
-      <UserProvider>
+    <UserProvider>
+      <ChakraProvider theme={theme}>
         <Component {...pageProps} />
-      </UserProvider>
-    </ChakraProvider>
+      </ChakraProvider>
+    </UserProvider>
   );
 }
