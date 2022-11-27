@@ -5,7 +5,7 @@ import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapGL, { Layer, Source } from "!react-map-gl";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading } from "@chakra-ui/react";
 import mapboxgl from "mapbox-gl";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
 import DrawControl from "./draw-control";
@@ -134,43 +134,53 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
       <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
         <Box flex={1}>
-          <MapGL
-            id={"mapRef"}
-            initialViewState={{
-              ...props.mapViewState,
-            }}
-            mapStyle={props.mapTheme}
-            mapboxAccessToken={MAPBOX_TOKEN}
-            onMove={(e: { viewState: any }) => {
-              props.handleViewPortChange(e.viewState);
-            }}>
-            <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
-            <GeolocateControl position="bottom-left" />
-            <FullscreenControl position="bottom-left" />
-            <NavigationControl position="bottom-left" />
-
-            <DrawControl
-              position="bottom-left"
-              displayControlsDefault={false}
-              controls={{
-                polygon: true,
-                trash: true,
+          {user && (
+            <MapGL
+              id={"mapRef"}
+              initialViewState={{
+                ...props.mapViewState,
               }}
-              defaultMode="draw_polygon"
-              onCreate={onUpdate}
-              onUpdate={onUpdate}
-              onDelete={onDelete}
-              colRef={colRef}
-            />
+              mapStyle={props.mapTheme}
+              mapboxAccessToken={MAPBOX_TOKEN}
+              onMove={(e: { viewState: any }) => {
+                props.handleViewPortChange(e.viewState);
+              }}>
+              <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
+              <GeolocateControl position="bottom-left" />
+              <FullscreenControl position="bottom-left" />
+              <NavigationControl position="bottom-left" />
 
-            {data && (
-              <Source type="geojson" data={data}>
-                <Layer {...heatmapLayer} />
-                <Layer {...circleLayer} />
-              </Source>
-            )}
-          </MapGL>
+              <DrawControl
+                position="bottom-left"
+                displayControlsDefault={false}
+                controls={{
+                  polygon: true,
+                  trash: true,
+                }}
+                defaultMode="draw_polygon"
+                onCreate={onUpdate}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
+                colRef={colRef}
+              />
+
+              {data && (
+                <Source type="geojson" data={data}>
+                  <Layer {...heatmapLayer} />
+                  <Layer {...circleLayer} />
+                </Source>
+              )}
+            </MapGL>
+          )}
+          {!user && (
+            <Center height={"100%"}>
+              <Heading size={"md"} color={"gray.700"}>
+                Please login to use the map interface.
+              </Heading>
+            </Center>
+          )}
         </Box>
+
         <ControlPanel
           startTime={timeRange[0]}
           endTime={timeRange[1]}
