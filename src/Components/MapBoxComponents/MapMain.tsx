@@ -24,7 +24,12 @@ export const geoCoder = new MapboxGeocoder({
   placeholder: "Search for Location",
 });
 
-export function MapMain({ setBookmarks: setBookmarks }: { setBookmarks: any }) {
+interface MapMainInterface {
+  setBookmarks: any;
+  selectedBookmarks: any;
+}
+
+export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
   const [MapTheme, setMapTheme] = useState("mapbox://styles/tejabalu/cl8ga8wd1001q15nrvf7iyhob");
 
   return (
@@ -35,7 +40,7 @@ export function MapMain({ setBookmarks: setBookmarks }: { setBookmarks: any }) {
       </Flex>
       <Flex flex={2.5} flexDirection={"column"} m={1}>
         <QuickStats />
-        <MapboxComponent mapTheme={MapTheme} setBookmarks={setBookmarks} />
+        <MapboxComponent mapTheme={MapTheme} setBookmarks={setBookmarks} selectedBookmarks={selectedBookmarks} />
       </Flex>
     </MapProvider>
   );

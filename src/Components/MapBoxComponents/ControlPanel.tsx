@@ -57,7 +57,6 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
           {...IconButtonStyles}
           aria-label={"Skip back"}
           onClick={() => {
-            console.log("back clicked");
             props.setSelectedTime(props.selectedTime - 24 * 60 * 60 * 1000);
           }}
           icon={<IoPlaySkipBack />}
@@ -114,10 +113,8 @@ function ControlPanel(props: {
   const totalDays = Math.round((endTime - startTime) / day);
   const selectedDay = Math.round((selectedTime - startTime) / day);
   const { isPlay, setIsPlay } = useContext(PlayContext);
-  console.log(selectedDay); // TODO: Remove in prod
 
   useEffect(() => {
-    console.log("interval exec");
     const interval = setInterval(() => {
       if (selectedTime >= endTime) {
         if (setIsPlay) {

@@ -12,14 +12,16 @@ function MyApp() {
   }, []);
 
   const [bookmarks, setBookmarks] = useState([]);
+  const [selectedBookmarks, setSelectedBookmarks] = useState();
+
   return (
     <Container w={"full"} maxW={"container.2xl"} h={"100vh"} backgroundColor={"gray.50"}>
       <Flex h={"full"} direction={"column"} minH={0}>
         <NavBar />
         <Divider borderColor={"gray.600"} />
         <Flex flex={1} minH={0} flexDirection={"row"} w={"full"} p={2}>
-          <MapMain setBookmarks={setBookmarks} />
-          <PredictionResults bookmarks={bookmarks} />
+          <MapMain setBookmarks={setBookmarks} selectedBookmarks={selectedBookmarks} />
+          <PredictionResults bookmarks={bookmarks} setSelectedBookmarks={setSelectedBookmarks} />
         </Flex>
       </Flex>
     </Container>

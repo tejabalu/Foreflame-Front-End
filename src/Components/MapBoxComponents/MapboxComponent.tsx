@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
@@ -7,7 +7,7 @@ import { circleLayer, heatmapLayer } from "./map-style";
 import MapGL, { Layer, Source } from "!react-map-gl";
 import { Box, Center, Flex, Heading } from "@chakra-ui/react";
 import mapboxgl from "mapbox-gl";
-import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
+import { FullscreenControl, GeolocateControl, MapRef, NavigationControl } from "react-map-gl";
 import DrawControl from "./draw-control";
 import GeocoderControl from "./geocoder-control";
 import { MAPBOX_TOKEN } from "./MapMain";
@@ -18,6 +18,7 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import { bbox } from "@turf/turf";
 import { doc, getDoc } from "firebase/firestore";
 import { UserContext } from "../../LoginContext";
 import { MapDrawFunctions } from "./MapDrawFunctions";
@@ -39,10 +40,11 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
 interface MapComponentInterface {
   mapTheme: String;
   setBookmarks: any;
+  selectedBookmarks: string;
 }
 
-export default function MapboxComponent({ mapTheme, setBookmarks }: MapComponentInterface) {
-  const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
+export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookmarks }: MapComponentInterface) {
+  // const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
 
   // const handleViewportChange = useCallback(
   //   (newViewport: ViewState) => {
@@ -115,12 +117,32 @@ export default function MapboxComponent({ mapTheme, setBookmarks }: MapComponent
 
   const { onUpdate, onDelete } = MapDrawFunctions({ colRef, setDrawFeatures });
 
+  // Fit to bounding box for map based on bookmark feature selection
+  const mapRef = useRef<MapRef>();
+
+  useEffect(() => {
+    if (selectedBookmarks) {
+      // @ts-ignore
+      // TODO: set proper types
+      const [minLng, minLat, maxLng, maxLat] = bbox(drawFeatures[selectedBookmarks]);
+
+      mapRef.current?.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        { padding: 40, duration: 3000 }
+      );
+    }
+  }, [selectedBookmarks]);
+
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
       <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
         <Box flex={1}>
           {user && (
             <MapGL
+              ref={mapRef}
               id={"mapRef"}
               initialViewState={{
                 latitude: 50,

@@ -24,7 +24,6 @@ function DrawControl(props: DrawControlProps) {
           if (downloaded) {
             const prevFeatures = JSON.parse(downloaded.data);
             for (const f in prevFeatures) {
-              console.log(prevFeatures[f]);
               draw.add(prevFeatures[f]);
             }
           }
