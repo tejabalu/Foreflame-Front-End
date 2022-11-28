@@ -1,6 +1,6 @@
-import { Button, Center, Flex, Stack, Text } from "@chakra-ui/react";
-import { BsBookmarkPlus, BsClipboardData, BsShare } from "react-icons/bs";
 import { Icon } from "@chakra-ui/icons";
+import { Button, Center, Flex, Stack, Text } from "@chakra-ui/react";
+import { BsClipboardData, BsShare } from "react-icons/bs";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 
 function ResultItem(props: { text: string; icon: any }) {
@@ -29,7 +29,6 @@ export function ResultsUtilities() {
       mb={1}
       p={1}
       bg={"gray.100"}>
-      <ResultItem text={"Bookmark"} icon={BsBookmarkPlus} />
       <ResultItem text={"Report"} icon={HiOutlineDocumentReport} />
       <ResultItem text={"Datasets"} icon={BsClipboardData} />
       <ResultItem text={"Share"} icon={BsShare} />

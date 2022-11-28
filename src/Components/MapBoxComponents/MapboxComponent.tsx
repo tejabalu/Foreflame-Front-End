@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
@@ -18,9 +18,10 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { UserContext } from "../../LoginContext";
+import { MapDrawFunctions } from "./MapDrawFunctions";
 
 export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
@@ -36,7 +37,16 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
   return { type: "FeatureCollection", features };
 }
 
-export default function MapboxComponent(props: { mapViewState: ViewState; handleViewPortChange: any; mapTheme: String }) {
+export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
+  const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
+
+  const handleViewportChange = useCallback(
+    (newViewport: ViewState) => {
+      setViewState(newViewport);
+    },
+    [mapViewState]
+  );
+
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
@@ -87,48 +97,7 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
     }
   }, [colRef]);
 
-  const onUpdate = (e: any) => {
-    console.log(colRef, "map colref test");
-    setDrawFeatures((currFeatures) => {
-      const newFeatures: any = { ...currFeatures };
-      for (const f of e.features) {
-        newFeatures[f.id] = f;
-      }
-      console.log(JSON.stringify(newFeatures));
-      if (colRef) {
-        setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
-          .then((e) => {
-            console.log("Draw features written");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-      console.log(newFeatures);
-      return newFeatures;
-    });
-  };
-
-  const onDelete = (e: any) => {
-    setDrawFeatures((currFeatures) => {
-      const newFeatures: any = { ...currFeatures };
-      for (const f of e.features) {
-        delete newFeatures[f.id];
-      }
-      console.log(JSON.parse(JSON.stringify(newFeatures)));
-      if (colRef) {
-        setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
-          .then((e) => {
-            console.log("Draw features written");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-      console.log(newFeatures);
-      return newFeatures;
-    });
-  };
+  const { onUpdate, onDelete } = MapDrawFunctions({ colRef, setDrawFeatures });
 
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
@@ -138,12 +107,14 @@ export default function MapboxComponent(props: { mapViewState: ViewState; handle
             <MapGL
               id={"mapRef"}
               initialViewState={{
-                ...props.mapViewState,
+                latitude: 50,
+                longitude: -120,
+                zoom: 4,
               }}
-              mapStyle={props.mapTheme}
+              mapStyle={mapTheme}
               mapboxAccessToken={MAPBOX_TOKEN}
               onMove={(e: { viewState: any }) => {
-                props.handleViewPortChange(e.viewState);
+                handleViewportChange(e.viewState);
               }}>
               <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
               <GeolocateControl position="bottom-left" />

@@ -2,6 +2,7 @@ import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { RiWindyLine } from "react-icons/ri";
 import { TbTemperature } from "react-icons/tb";
 import { WiHumidity } from "react-icons/wi";
+import { ComponentTitle } from "./ComponentTitle";
 
 function PredictionStat(props: { date: string; probability: number; temperature: number; wind: number; humidity: number }) {
   const { date, probability, temperature, wind, humidity } = props;
@@ -52,28 +53,27 @@ function PredictionStat(props: { date: string; probability: number; temperature:
 
 export function PredictionOverview() {
   //TODO set states for temp, humid, wind, prob
+  const heading = "5 Day High Risk Areas";
+  const popOverContent =
+    "Displays the top 15 high risk areas for the selected feature, or the top 15 high risk areas for the whole state of Washington if none are selected.";
+
   let probability = () => {
     return Math.floor(Math.random() * 100);
   };
+
   return (
-    <Flex
-      flex={1}
-      direction={"column"}
-      bg={"green"}
-      color={"white"}
-      p={4}
-      borderRadius={"lg"}
-      justifyContent={"flex-start"}
-      alignItems={"center"}
-      overflow={"auto"}>
-      <Text mb={4}>5 day High Risk Areas</Text>
-      <VStack>
-        <PredictionStat date={"Today"} probability={probability()} temperature={95} wind={1.44} humidity={23.8} />
-        <PredictionStat date={"Wednesday 10"} probability={probability()} temperature={99} wind={1.32} humidity={24.9} />
-        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-        <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-      </VStack>
+    <Flex direction={"column"} overflow={"auto"} mt={1} mb={2} p={4} borderRadius={"lg"} w={"100%"} h={"100%"} bg={"green"}>
+      {ComponentTitle({ heading, popOverContent })}
+
+      <Flex flex={1} direction={"column"} color={"white"} mt={4} mb={2} justifyContent={"flex-start"} alignItems={"center"}>
+        <VStack>
+          <PredictionStat date={"Today"} probability={probability()} temperature={95} wind={1.44} humidity={23.8} />
+          <PredictionStat date={"Wednesday 10"} probability={probability()} temperature={99} wind={1.32} humidity={24.9} />
+          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
+          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
+          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
+        </VStack>
+      </Flex>
     </Flex>
   );
 }
