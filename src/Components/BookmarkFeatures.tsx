@@ -1,10 +1,12 @@
 import { Box, Flex, Radio, RadioGroup, Stack } from "@chakra-ui/react";
 import { ComponentTitle } from "./ComponentTitle";
 
-export function BookmarkFeatures() {
+export function BookmarkFeatures({ bookmarks }: { bookmarks: [] }) {
   const heading = "Bookmark Features";
   const popOverContent =
     "The following are all the bookmarks made on the map interface. Selecting a bookmark will ensure the parameters and 5 day high risk areas are relevant to this location alone.";
+
+  console.log(bookmarks, "bookmarks");
 
   return (
     <Flex direction={"column"} flex={2} p={2} bg={"green"} w={"100%"} rounded={"xl"} mb={1}>
@@ -17,16 +19,11 @@ export function BookmarkFeatures() {
         <Box p={2}>
           <RadioGroup color="white">
             <Stack direction="column">
-              <Radio value={1}>test</Radio>
-              <Radio value={2}>test</Radio>
-              <Radio value={3}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
-              <Radio value={4}>test</Radio>
+              {bookmarks.map((bookmark, i) => (
+                <Radio key={bookmark["id"]} value={bookmark["id"]}>
+                  {bookmark["featureName"]}
+                </Radio>
+              ))}
             </Stack>
           </RadioGroup>
         </Box>

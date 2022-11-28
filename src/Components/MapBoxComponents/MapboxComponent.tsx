@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import ControlPanel from "./ControlPanel";
 import { circleLayer, heatmapLayer } from "./map-style";
 // @ts-ignore
@@ -10,7 +10,7 @@ import mapboxgl from "mapbox-gl";
 import { FullscreenControl, GeolocateControl, NavigationControl } from "react-map-gl";
 import DrawControl from "./draw-control";
 import GeocoderControl from "./geocoder-control";
-import { MAPBOX_TOKEN, ViewState } from "./MapMain";
+import { MAPBOX_TOKEN } from "./MapMain";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
 mapboxgl.workerClass =
@@ -19,7 +19,6 @@ mapboxgl.workerClass =
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import { doc, getDoc } from "firebase/firestore";
-import { useRouter } from "next/router";
 import { UserContext } from "../../LoginContext";
 import { MapDrawFunctions } from "./MapDrawFunctions";
 
@@ -37,15 +36,20 @@ function filterFeaturesByDay(featureCollection: { features: any[] }, time: numbe
   return { type: "FeatureCollection", features };
 }
 
-export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
+interface MapComponentInterface {
+  mapTheme: String;
+  setBookmarks: any;
+}
+
+export default function MapboxComponent({ mapTheme, setBookmarks }: MapComponentInterface) {
   const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
 
-  const handleViewportChange = useCallback(
-    (newViewport: ViewState) => {
-      setViewState(newViewport);
-    },
-    [mapViewState]
-  );
+  // const handleViewportChange = useCallback(
+  //   (newViewport: ViewState) => {
+  //     setViewState(newViewport);
+  //   },
+  //   [mapViewState]
+  // );
 
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
@@ -81,7 +85,6 @@ export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
 
   const [drawFeatures, setDrawFeatures] = useState({});
   const { colRef, user } = useContext(UserContext);
-  const router = useRouter();
 
   // TODO: this data is being updated again in the draw-control.ts
   // Pass this data to that function instead of making 2 db calls.
@@ -96,6 +99,19 @@ export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
       });
     }
   }, [colRef]);
+
+  useEffect(() => {
+    const bookmarks = [];
+    for (const f in drawFeatures) {
+      const bookmark: any = {};
+      // TODO: update types for all bookmark features
+      // @ts-ignore
+      bookmark["featureName"] = drawFeatures[f]["featureName"];
+      bookmark["id"] = f;
+      bookmarks.push(bookmark);
+    }
+    setBookmarks(bookmarks);
+  }, [drawFeatures]);
 
   const { onUpdate, onDelete } = MapDrawFunctions({ colRef, setDrawFeatures });
 
@@ -113,9 +129,10 @@ export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
               }}
               mapStyle={mapTheme}
               mapboxAccessToken={MAPBOX_TOKEN}
-              onMove={(e: { viewState: any }) => {
-                handleViewportChange(e.viewState);
-              }}>
+              // onMove={(e: { viewState: any }) => {
+              //   handleViewportChange(e.viewState);
+              // }}
+            >
               <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
               <GeolocateControl position="bottom-left" />
               <FullscreenControl position="bottom-left" />
@@ -132,6 +149,7 @@ export default function MapboxComponent({ mapTheme }: { mapTheme: String }) {
                 onCreate={onUpdate}
                 onUpdate={onUpdate}
                 onDelete={onDelete}
+                initialDrawFeatures={drawFeatures}
                 colRef={colRef}
               />
 

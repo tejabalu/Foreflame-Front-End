@@ -8,15 +8,15 @@ interface MapDrawPropsInterface {
 
 export function MapDrawFunctions({ colRef, setDrawFeatures }: MapDrawPropsInterface) {
   const onUpdate = (e: any) => {
-    console.log(colRef, "map colref test");
     setDrawFeatures((currFeatures) => {
       const newFeatures: any = { ...currFeatures };
+
       for (const f of e.features) {
         const featureName = prompt("Please enter the name of the feature.");
         f["featureName"] = featureName;
         newFeatures[f.id] = f;
       }
-      console.log(JSON.stringify(newFeatures));
+
       if (colRef) {
         setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
           .then((e) => {
@@ -26,7 +26,7 @@ export function MapDrawFunctions({ colRef, setDrawFeatures }: MapDrawPropsInterf
             console.log(err);
           });
       }
-      console.log(newFeatures);
+
       return newFeatures;
     });
   };
@@ -37,7 +37,7 @@ export function MapDrawFunctions({ colRef, setDrawFeatures }: MapDrawPropsInterf
       for (const f of e.features) {
         delete newFeatures[f.id];
       }
-      console.log(JSON.parse(JSON.stringify(newFeatures)));
+
       if (colRef) {
         setDoc(doc(colRef, "drawFeatures"), { data: JSON.stringify(newFeatures) })
           .then((e) => {
@@ -47,7 +47,7 @@ export function MapDrawFunctions({ colRef, setDrawFeatures }: MapDrawPropsInterf
             console.log(err);
           });
       }
-      console.log(newFeatures);
+
       return newFeatures;
     });
   };
