@@ -21,8 +21,10 @@ import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { PlayContext } from "./MapboxComponent";
 
 function formatTime(time: string | number | Date) {
-  const date = new Date(time);
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  if (typeof time === "number") {
+    const date = new Date(time * 1000);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  }
 }
 
 function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime: any; endTime: any; selectedTime: any }) {
@@ -109,8 +111,11 @@ function ControlPanel(props: {
   const { startTime, endTime, allDays, setSelectedTime, selectedTime, setIsAllDays } = props;
 
   // console.log(startTimeFormat.toTimeString());
-  const day = 24 * 60 * 60 * 1000;
-  const totalDays = Math.round((endTime - startTime) / day);
+  const day = 24 * 60 * 60;
+  const totalDays = 1 + Math.ceil((startTime - endTime) / day);
+  console.log(totalDays, startTime, endTime, startTime - endTime, "total days");
+  console.log(formatTime(startTime), "format time");
+  console.log(formatTime(endTime), "endTime time");
   const selectedDay = Math.round((selectedTime - startTime) / day);
   const { isPlay, setIsPlay } = useContext(PlayContext);
 
@@ -156,9 +161,9 @@ function ControlPanel(props: {
 
       <Slider
         my={2}
-        defaultValue={10}
+        defaultValue={1}
         min={1}
-        max={30}
+        max={5}
         step={1}
         value={selectedDay}
         isDisabled={allDays}

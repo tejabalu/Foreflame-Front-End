@@ -26,12 +26,15 @@ import { MapDrawFunctions } from "./MapDrawFunctions";
 export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
 function filterFeaturesByDay(featureCollection: { features: any[] }, time: number | string | Date) {
+  console.log(time);
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth();
   const day = date.getDate();
   const features = featureCollection.features.filter((feature: { properties: { time: string | number | Date } }) => {
     const featureDate = new Date(feature.properties.time);
+    // console.log(featureDate, "selection triggered");
+
     return featureDate.getFullYear() === year && featureDate.getMonth() === month && featureDate.getDate() === day;
   });
   return { type: "FeatureCollection", features };
@@ -44,15 +47,6 @@ interface MapComponentInterface {
 }
 
 export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookmarks }: MapComponentInterface) {
-  // const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
-
-  // const handleViewportChange = useCallback(
-  //   (newViewport: ViewState) => {
-  //     setViewState(newViewport);
-  //   },
-  //   [mapViewState]
-  // );
-
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
@@ -60,13 +54,17 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
   const [isPlay, setIsPlay] = useState(false);
 
   useEffect(() => {
-    fetch("https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson")
+    fetch("https://foreflame.eastus.cloudapp.azure.com/static/single_instance.geojson", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
       .then((resp) => resp.json())
       .then((json) => {
         // TODO: validate the JSON data first
         const features = json.features;
         const endTime = features[0].properties.time;
         const startTime = features[features.length - 1].properties.time;
+        console.log(endTime, startTime);
 
         setTimeRange([startTime, endTime]);
         setEarthQuakes(json);
@@ -193,8 +191,8 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
         </Box>
 
         <ControlPanel
-          startTime={timeRange[0]}
-          endTime={timeRange[1]}
+          startTime={timeRange[1]}
+          endTime={timeRange[0]}
           selectedTime={selectedTime}
           allDays={isAllDays}
           setSelectedTime={setSelectedTime}
