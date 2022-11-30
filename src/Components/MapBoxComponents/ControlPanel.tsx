@@ -22,7 +22,7 @@ import { PlayContext } from "./MapboxComponent";
 
 function formatTime(time: string | number | Date) {
   if (typeof time === "number") {
-    const date = new Date(time * 1000);
+    const date = new Date(time);
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
   }
 }
@@ -113,7 +113,7 @@ function ControlPanel(props: {
   // console.log(startTimeFormat.toTimeString());
   const day = 24 * 60 * 60 * 1000;
   const totalDays = Math.ceil((endTime - startTime) / day);
-  console.log(totalDays);
+  console.log(totalDays, "total days");
   const selectedDay = Math.round((selectedTime - startTime) / day);
   const { isPlay, setIsPlay } = useContext(PlayContext);
 
@@ -159,7 +159,7 @@ function ControlPanel(props: {
 
       <Slider
         my={2}
-        defaultValue={10}
+        defaultValue={1}
         min={0}
         max={totalDays}
         step={1}

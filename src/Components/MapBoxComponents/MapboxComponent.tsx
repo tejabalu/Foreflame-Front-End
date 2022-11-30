@@ -57,7 +57,6 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
 
   useEffect(() => {
     fetch("https://foreflame.eastus.cloudapp.azure.com/static/single_instance.geojson")
-
       .then((resp) => resp.json())
       .then((json) => {
         // TODO: validate the JSON data first
@@ -218,8 +217,8 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
         </Box>
 
         <ControlPanel
-          startTime={timeRange[1]}
-          endTime={timeRange[0]}
+          startTime={timeRange[0]}
+          endTime={timeRange[1]}
           selectedTime={selectedTime}
           allDays={isAllDays}
           setSelectedTime={setSelectedTime}
