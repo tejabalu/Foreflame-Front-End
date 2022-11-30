@@ -20,7 +20,7 @@ import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
 import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { PlayContext } from "./MapboxComponent";
 
-function formatTime(time: string | number | Date) {
+export function formatTime(time: string | number | Date) {
   if (typeof time === "number") {
     const date = new Date(time);
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import ControlPanel from "./ControlPanel";
+import ControlPanel, { formatTime } from "./ControlPanel";
 import { circleLayer, heatmapLayer, skyLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -195,7 +195,7 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
               {popupFeatures[0] && (
                 <Popup longitude={popupFeatures[1]} latitude={popupFeatures[2]} anchor="bottom">
                   The confidence of prediction for this point is {(popupFeatures[3] * 100).toString().substring(0, 4)}%. <br />
-                  Time: {popupFeatures[4]}
+                  Time: {formatTime(popupFeatures[4])}
                 </Popup>
               )}
 
