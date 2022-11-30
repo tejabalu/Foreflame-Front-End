@@ -21,8 +21,10 @@ import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { PlayContext } from "./MapboxComponent";
 
 function formatTime(time: string | number | Date) {
-  const date = new Date(time);
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  if (typeof time === "number") {
+    const date = new Date(time * 1000);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  }
 }
 
 function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime: any; endTime: any; selectedTime: any }) {
