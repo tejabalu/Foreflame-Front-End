@@ -1,4 +1,4 @@
-import type { CircleLayer, HeatmapLayer } from "react-map-gl";
+import type { CircleLayer, HeatmapLayer, SkyLayer } from "react-map-gl";
 
 const MAX_ZOOM_LEVEL = 9;
 
@@ -15,23 +15,18 @@ export const heatmapLayer: HeatmapLayer = {
     // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
     // Begin color ramp at 0-stop with a 0-transparancy color
     // to create a blur-like effect.
+    // prettier-ignore
     "heatmap-color": [
       "interpolate",
       ["linear"],
       ["heatmap-density"],
       //TODO update colors for heatmap
-      0,
-      "rgba(0,128,255,0)",
-      0.2,
-      "rgb(0,58,255)",
-      0.4,
-      "rgb(0,255,89)",
-      0.6,
-      "rgb(255,242,0)",
-      0.8,
-      "rgb(255,106,0)",
-      0.9,
-      "rgb(255,0,0)",
+      0, "rgba(0,128,255,0)",
+      0.2, "rgb(0,58,255)",
+      0.4, "rgb(0,255,89)",
+      0.6, "rgb(255,242,0)",
+      0.8, "rgb(255,106,0)",
+      0.9, "rgb(255,0,0)",
     ],
     // Adjust the heatmap radius by zoom level
     "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 2, 2, MAX_ZOOM_LEVEL, 20],
@@ -40,6 +35,7 @@ export const heatmapLayer: HeatmapLayer = {
   },
 };
 
+// prettier-ignore
 export const circleLayer: CircleLayer = {
   id: "circle",
   type: "circle",
@@ -50,32 +46,35 @@ export const circleLayer: CircleLayer = {
       "interpolate",
       ["linear"],
       ["zoom"],
-      2,
-      ["interpolate", ["linear"], ["get", "mag"], 1, 1, 6, 4],
-      12,
-      ["interpolate", ["linear"], ["get", "mag"], 5, 8, 15, 50],
+      2, ["interpolate", ["linear"], ["get", "mag"], 1, 1, 6, 4],
+      12, ["interpolate", ["linear"], ["get", "mag"], 5, 8, 15, 50],
     ],
     // Color circle by earthquake magnitude
     "circle-color": [
       "interpolate",
       ["linear"],
       ["get", "mag"],
-      1,
-      "rgb(69,134,192)",
-      2,
-      "rgb(0,58,255)",
-      3,
-      "rgb(0,255,89)",
-      4,
-      "rgb(255,242,0)",
-      5,
-      "rgb(255,106,0)",
-      6,
-      "rgb(255,0,0)",
+      0.2, "rgb(69,134,192)",
+      0.3, "rgb(0,58,255)",
+      0.4, "rgb(0,255,89)",
+      0.5, "rgb(255,242,0)",
+      0.7, "rgb(255,106,0)",
+      0.9, "rgb(255,0,0)",
     ],
     "circle-stroke-color": "white",
     "circle-stroke-width": 1,
     // Transition from heatmap to circle layer by zoom level
     "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+  },
+
+};
+
+export const skyLayer: SkyLayer = {
+  id: "sky",
+  type: "sky",
+  paint: {
+    "sky-type": "atmosphere",
+    "sky-atmosphere-sun": [0.0, 0.0],
+    "sky-atmosphere-sun-intensity": 15,
   },
 };

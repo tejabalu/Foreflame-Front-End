@@ -110,7 +110,8 @@ function ControlPanel(props: {
 
   // console.log(startTimeFormat.toTimeString());
   const day = 24 * 60 * 60 * 1000;
-  const totalDays = Math.round((endTime - startTime) / day);
+  const totalDays = Math.ceil((endTime - startTime) / day);
+  console.log(totalDays);
   const selectedDay = Math.round((selectedTime - startTime) / day);
   const { isPlay, setIsPlay } = useContext(PlayContext);
 
@@ -157,8 +158,8 @@ function ControlPanel(props: {
       <Slider
         my={2}
         defaultValue={10}
-        min={1}
-        max={30}
+        min={0}
+        max={totalDays}
         step={1}
         value={selectedDay}
         isDisabled={allDays}

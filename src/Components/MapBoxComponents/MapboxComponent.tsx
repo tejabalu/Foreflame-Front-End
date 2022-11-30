@@ -1,13 +1,13 @@
 import * as React from "react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import ControlPanel from "./ControlPanel";
-import { circleLayer, heatmapLayer } from "./map-style";
+import { circleLayer, heatmapLayer, skyLayer } from "./map-style";
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapGL, { Layer, Source } from "!react-map-gl";
 import { Box, Center, Flex, Heading } from "@chakra-ui/react";
-import mapboxgl from "mapbox-gl";
-import { FullscreenControl, GeolocateControl, MapRef, NavigationControl } from "react-map-gl";
+import mapboxgl, { MapLayerMouseEvent } from "mapbox-gl";
+import { FullscreenControl, GeolocateControl, MapRef, NavigationControl, Popup } from "react-map-gl";
 import DrawControl from "./draw-control";
 import GeocoderControl from "./geocoder-control";
 import { MAPBOX_TOKEN } from "./MapMain";
@@ -44,32 +44,26 @@ interface MapComponentInterface {
 }
 
 export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookmarks }: MapComponentInterface) {
-  // const [mapViewState, setViewState] = useState({ latitude: 50, longitude: -120, zoom: 4 });
-
-  // const handleViewportChange = useCallback(
-  //   (newViewport: ViewState) => {
-  //     setViewState(newViewport);
-  //   },
-  //   [mapViewState]
-  // );
-
   const [isAllDays, setIsAllDays] = useState(false);
   const [timeRange, setTimeRange] = useState([0, 0]);
   const [selectedTime, setSelectedTime] = useState(0);
-  const [earthquakes, setEarthQuakes] = useState(null);
+  const [firePredictions, setFirePredictions] = useState(null);
   const [isPlay, setIsPlay] = useState(false);
+  const [drawFeatures, setDrawFeatures] = useState({});
+  const [popupFeatures, setPopupFeatures] = useState<[boolean, number, number, number, number]>([false, 0, 0, 0, 0]);
 
   useEffect(() => {
-    fetch("https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson")
+    fetch("https://foreflame.eastus.cloudapp.azure.com/static/single_instance.geojson")
       .then((resp) => resp.json())
       .then((json) => {
         // TODO: validate the JSON data first
         const features = json.features;
-        const endTime = features[0].properties.time;
-        const startTime = features[features.length - 1].properties.time;
+        const startTime = features[0].properties.time;
+        const endTime = features[features.length - 1].properties.time;
+        console.log(new Date(startTime), new Date(endTime), "first download test");
 
         setTimeRange([startTime, endTime]);
-        setEarthQuakes(json);
+        setFirePredictions(json);
         setSelectedTime(endTime);
       })
       .catch((err) => console.error("Could not load data", err));
@@ -77,15 +71,14 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
 
   const data = useMemo(() => {
     if (isAllDays) {
-      return earthquakes;
-    } else if (earthquakes) {
-      return filterFeaturesByDay(earthquakes, selectedTime);
+      return firePredictions;
+    } else if (firePredictions) {
+      return filterFeaturesByDay(firePredictions, selectedTime);
     }
-  }, [earthquakes, isAllDays, selectedTime]);
+  }, [firePredictions, isAllDays, selectedTime]);
 
   // Map drawing stuff
 
-  const [drawFeatures, setDrawFeatures] = useState({});
   const { colRef, user } = useContext(UserContext);
 
   // TODO: this data is being updated again in the draw-control.ts
@@ -136,6 +129,19 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
     }
   }, [selectedBookmarks]);
 
+  const popupEvent = (e: MapLayerMouseEvent) => {
+    e.originalEvent.stopPropagation();
+    const clickedFeature = mapRef.current?.queryRenderedFeatures(e.point, { layers: ["circle"] });
+    setPopupFeatures([false, 0, 0, 0, 0]);
+    if (clickedFeature && clickedFeature[0]) {
+      // @ts-ignore
+      console.log(clickedFeature[0].layer.id, clickedFeature[0].properties.mag, clickedFeature[0].properties.time, "mouse event test");
+      // @ts-ignore
+      setPopupFeatures([true, e.lngLat.lng, e.lngLat.lat, clickedFeature[0].properties.mag, clickedFeature[0].properties.time]);
+      console.log(popupFeatures, e, "mouse clicked");
+    }
+  };
+
   return (
     <PlayContext.Provider value={{ isPlay, setIsPlay }}>
       <Flex direction={"column"} border={"1px"} borderColor={"gray.300"} borderRadius={"xl"} overflow={"hidden"} h={"full"}>
@@ -151,10 +157,11 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
               }}
               mapStyle={mapTheme}
               mapboxAccessToken={MAPBOX_TOKEN}
-              // onMove={(e: { viewState: any }) => {
-              //   handleViewportChange(e.viewState);
-              // }}
-            >
+              onClick={popupEvent}
+              {...(mapTheme === "mapbox://styles/mapbox/satellite-v9" && {
+                maxPitch: 85,
+                terrain: { source: "mapbox-dem", exaggeration: 1.5 },
+              })}>
               <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
               <GeolocateControl position="bottom-left" />
               <FullscreenControl position="bottom-left" />
@@ -180,6 +187,20 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
                   <Layer {...heatmapLayer} />
                   <Layer {...circleLayer} />
                 </Source>
+              )}
+
+              {popupFeatures[0] && (
+                <Popup longitude={popupFeatures[1]} latitude={popupFeatures[2]} anchor="bottom">
+                  The confidence of prediction for this point is {(popupFeatures[3] * 100).toString().substring(0, 4)}%. <br />
+                  Time: {popupFeatures[4]}
+                </Popup>
+              )}
+
+              {mapTheme === "mapbox://styles/mapbox/satellite-v9" && (
+                <>
+                  <Source id="mapbox-dem" type="raster-dem" url="mapbox://mapbox.mapbox-terrain-dem-v1" tileSize={512} maxzoom={14} />
+                  <Layer {...skyLayer} />
+                </>
               )}
             </MapGL>
           )}
