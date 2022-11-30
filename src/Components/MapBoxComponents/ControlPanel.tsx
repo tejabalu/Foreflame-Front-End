@@ -110,7 +110,6 @@ function ControlPanel(props: {
 }) {
   const { startTime, endTime, allDays, setSelectedTime, selectedTime, setIsAllDays } = props;
 
-  // console.log(startTimeFormat.toTimeString());
   const day = 24 * 60 * 60 * 1000;
   const totalDays = Math.ceil((endTime - startTime) / day);
   console.log(totalDays, "total days");
