@@ -29,8 +29,8 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
   const SatelliteStreetMap = "mapbox://styles/mapbox/satellite-streets-v12";
   const LightMap = "mapbox://styles/mapbox/light-v11";
   const DarkMap = "mapbox://styles/mapbox/navigation-night-v1";
-  const SatelliteMap = "mapbox://styles/mapbox/satellite-v9";
   const TerrainMap = "mapbox://styles/tejabalu/clardo3bu000415tc46tvzwxy";
+  const Terrain3DMap = "mapbox://styles/mapbox/satellite-v9";
 
   const heading = "Layer Selection";
   const popOverContent = "Checking the items in this list enables the corresponding layers to be displayed in the map interface.";
@@ -55,6 +55,7 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
                 <Stack direction="column">
                   <Radio value={StreetMap}>Streets</Radio>
                   <Radio value={SatelliteStreetMap}>Satellite Streets</Radio>
+                  <Radio value={Terrain3DMap}>Terrain 3D</Radio>
                   <Radio value={TerrainMap}>Terrain</Radio>
                   <Radio value={DarkMap}>Dark</Radio>
                 </Stack>
