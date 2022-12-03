@@ -2,8 +2,8 @@ import { Container, Divider, Flex } from "@chakra-ui/react";
 import React from "react";
 // import Logout from "../src/Components/FirebaseAuth/Logout";
 // import SignUp from "../src/Components/FirebaseAuth/SignUp";
-import Greeting from "../src/Components/Greeting";
 import NavBar from "../src/Components/NavBar";
+import HomePage from "../src/HomePage";
 
 function App() {
   return (
@@ -11,8 +11,7 @@ function App() {
       <Flex h={"full"} direction={"column"} minH={0}>
         <NavBar />
         <Divider borderColor={"gray.600"} />
-        {/* <Login /> */}
-        <Greeting />
+        <HomePage />
       </Flex>
     </Container>
   );

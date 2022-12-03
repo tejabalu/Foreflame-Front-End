@@ -24,18 +24,18 @@ export default function SignUp({ setSignInGreeting }: { setSignInGreeting: React
   return (
     <Flex align={"center"} justify={"center"}>
       <Stack spacing={8} mx={"auto"} width={"xl"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"3xl"}>Sign up for a new account</Heading>
-          <Button
-            colorScheme={"whiteAlpha"}
-            onClick={() => {
-              console.log("clicked");
-              setSignInGreeting(true);
-            }}>
-            <Text color={"green"}>Already have an account? Sign in.</Text>
-          </Button>
-        </Stack>
         <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} boxShadow={"lg"} p={8}>
+          <Stack align={"center"} pb={12}>
+            <Heading fontSize={"3xl"}>Sign up for a new account</Heading>
+            <Button
+              colorScheme={"whiteAlpha"}
+              onClick={() => {
+                console.log("clicked");
+                setSignInGreeting(true);
+              }}>
+              <Text color={"green"}>Already have an account? Sign in.</Text>
+            </Button>
+          </Stack>
           <Stack spacing={4}>
             <Formik
               initialValues={{ name: "", email: "", password: "" }}

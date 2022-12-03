@@ -12,24 +12,26 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Stack,
   Text,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { ReactNode, useContext } from "react";
+import { useContext } from "react";
 import { BsPersonFill } from "react-icons/bs";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import { MdManageAccounts } from "react-icons/md";
 import { UserContext } from "../LoginContext";
 
-const Links = ["Documentation", "About"];
+const Links = [
+  ["Documentation", "https://github.com/tejabalu/Foreflame-Front-End"],
+  ["About", "/#about"],
+];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
+const NavLink = ({ children }: { children: string[] }) => (
   <Box /*TODO: Add hover options*/>
-    <Link px={4} py={2} fontWeight={"semibold"} rounded={"md"} bg={"gray.200"} href={"#"} _hover={{ textDecoration: "None" }}>
-      {children}
+    <Link as={NextLink} px={4} py={2} fontWeight={"semibold"} rounded={"md"} bg={"gray.200"} href={children[1]} _hover={{ textDecoration: "None" }}>
+      {children[0]}
     </Link>
   </Box>
 );
@@ -56,7 +58,10 @@ export default function NavBar() {
         <HStack alignItems={"center"}>
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }} mr={8}>
             {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
+              <NavLink key={link[0]}>
+                {link[0]}
+                {link[1]}
+              </NavLink>
             ))}
           </HStack>
           {user && (
@@ -99,16 +104,6 @@ export default function NavBar() {
           </Box>
         </HStack>
       </Flex>
-
-      {isOpen ? (
-        <Box pb={4} display={{ md: "none" }}>
-          <Stack as={"nav"} spacing={4}>
-            {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
-            ))}
-          </Stack>
-        </Box>
-      ) : null}
     </Box>
   );
 }
