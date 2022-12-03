@@ -7,10 +7,19 @@ export default function DashboardLink() {
       <Stack spacing={8} mx={"auto"} width={"xl"} py={12} px={6}>
         <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} boxShadow={"lg"} p={8}>
           <Stack align={"center"}>
-            <Heading fontSize={"3xl"}>ForeFlame Dashboard</Heading>
+            <Heading fontSize={"3xl"}>Welcome!</Heading>
+            <Text>Please go to the following link to start using ForeFlame.</Text>
             <Link href="/dashboard">
-              <Button colorScheme={"whiteAlpha"}>
-                <Text color={"green"}>Dashboard</Text>
+              <Button
+                color={"white"}
+                bg={"darkgreen"}
+                _hover={{
+                  bg: "green",
+                }}
+                w={"fit-content"}
+                px={8}
+                my={4}>
+                <Text>Dashboard</Text>
               </Button>
             </Link>
           </Stack>

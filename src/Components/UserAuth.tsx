@@ -4,7 +4,7 @@ import DashboardLink from "./Authentication/DashboardLink";
 import SignIn from "./Authentication/Signin";
 import SignUp from "./Authentication/SignUp";
 
-const Greeting = () => {
+const UserAuth = () => {
   const { user } = useContext(UserContext);
   const [signInGreeting, setSignInGreeting] = useState<boolean>(true);
 
@@ -25,4 +25,4 @@ const Greeting = () => {
   return <SignUp setSignInGreeting={toggleSignInGreeting} />;
 };
 
-export default Greeting;
+export default UserAuth;

@@ -26,18 +26,17 @@ export default function SignIn({ setSignInGreeting }: { setSignInGreeting: React
   return (
     <Flex align={"center"} justify={"center"}>
       <Stack spacing={8} mx={"auto"} width={"xl"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"3xl"}>Sign in to your account</Heading>
-          <Button
-            colorScheme={"whiteAlpha"}
-            onClick={() => {
-              console.log("asdf");
-              setSignInGreeting(false);
-            }}>
-            <Text color={"green"}>Don't have an account? Create a new one.</Text>
-          </Button>
-        </Stack>
         <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} boxShadow={"lg"} p={8}>
+          <Stack align={"center"} pb={12}>
+            <Heading fontSize={"3xl"}>Sign in to your account</Heading>
+            <Button
+              colorScheme={"whiteAlpha"}
+              onClick={() => {
+                setSignInGreeting(false);
+              }}>
+              <Text color={"green"}>Don't have an account? Create a new one.</Text>
+            </Button>
+          </Stack>
           <Stack spacing={4}>
             <Formik
               initialValues={{ email: "", password: "" }}
