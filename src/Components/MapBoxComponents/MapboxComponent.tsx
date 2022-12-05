@@ -64,6 +64,8 @@ export default function MapboxComponent({
     soil_moisture: 0,
   });
 
+  console.log(data);
+
   // Map drawing stuff
 
   const { colRef, user } = useContext(UserContext);
@@ -217,6 +219,7 @@ export default function MapboxComponent({
           allDays={isAllDays}
           setSelectedTime={setSelectedTime}
           setIsAllDays={setIsAllDays}
+          isHistorical={data?.features[0] && data?.features[0].properties.mag >= 0 ? false : true}
         />
       </Flex>
     </PlayContext.Provider>

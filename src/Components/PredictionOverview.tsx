@@ -3,6 +3,7 @@ import { RiWindyLine } from "react-icons/ri";
 import { TbTemperature } from "react-icons/tb";
 import { WiHumidity } from "react-icons/wi";
 import { ComponentTitle } from "./ComponentTitle";
+import { getTopFeaturesByBounds } from "./MapBoxComponents/mapUtilities";
 
 function PredictionStat(props: { date: string; probability: number; temperature: number; wind: number; humidity: number }) {
   const { date, probability, temperature, wind, humidity } = props;
@@ -51,11 +52,19 @@ function PredictionStat(props: { date: string; probability: number; temperature:
   );
 }
 
-export function PredictionOverview() {
+interface PredictionOverviewInterface {
+  data: { type: string; features: any[] } | null | undefined;
+  mapBounds: mapboxgl.LngLatBounds | undefined;
+}
+
+export function PredictionOverview({ data, mapBounds }: PredictionOverviewInterface) {
   //TODO set states for temp, humid, wind, prob
-  const heading = "5 Day High Risk Areas";
+  const heading = "Daily risk highlights";
   const popOverContent =
     "Displays the top 15 high risk areas for the selected feature, or the top 15 high risk areas for the whole state of Washington if none are selected.";
+
+  const highlights = getTopFeaturesByBounds(data, mapBounds);
+  console.log(highlights);
 
   let probability = () => {
     return Math.floor(Math.random() * 100);

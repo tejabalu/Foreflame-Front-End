@@ -69,7 +69,7 @@ export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
     <MapProvider>
       <Flex direction={"column"} flex={0.8} w={"100%"} borderRadius={"xl"} m={1} h={"full"} alignItems={"flex-start"}>
         <LayerSelection setMapTheme={setMapTheme} />
-        <PredictionOverview />
+        <PredictionOverview data={data} mapBounds={mapBounds} />
       </Flex>
       <Flex flex={2.5} flexDirection={"column"} m={1}>
         <QuickStats data={data} mapBounds={mapBounds} />

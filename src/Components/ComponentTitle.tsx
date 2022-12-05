@@ -1,7 +1,7 @@
 import { Button, Center, Popover, PopoverBody, PopoverContent, PopoverTrigger, Text } from "@chakra-ui/react";
 import { IoHelpCircleSharp } from "react-icons/io5";
 
-function LayerPopOver({ popOverContent }: { popOverContent: String }) {
+export function LayerPopOver({ popOverContent }: { popOverContent: String }) {
   return (
     <Popover>
       <PopoverTrigger>
@@ -15,6 +15,7 @@ function LayerPopOver({ popOverContent }: { popOverContent: String }) {
     </Popover>
   );
 }
+
 export function ComponentTitle({ heading, popOverContent }: { heading: String; popOverContent: String }) {
   return (
     <Center justifyContent={"space-between"}>

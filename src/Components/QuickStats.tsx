@@ -44,7 +44,7 @@ export function QuickStats({ data, mapBounds }: QuickStatsInterface) {
       <StatItem title={"Avg. Temperature (F)"} value={temp} icon={"../Assets/QuickStatsLogos/temperature.svg"} />
       <StatItem title={"Avg. Precipitation (kg/m^2)"} value={precipitation} icon={"../Assets/QuickStatsLogos/humidity.svg"} />
       <StatItem title={"Avg. Wind Speed (m/s)"} value={wind_speed} icon={"../Assets/QuickStatsLogos/wind.svg"} />
-      <StatItem title={"Avg. Soil Moisture (hPa)"} value={soil_moisture} icon={"../Assets/QuickStatsLogos/pressure.svg"} />
+      <StatItem title={"Avg. Soil Moisture (kg/m^2)"} value={soil_moisture} icon={"../Assets/QuickStatsLogos/pressure.svg"} />
       {/* TODO: change soil moisture logo */}
       icon
     </Stack>

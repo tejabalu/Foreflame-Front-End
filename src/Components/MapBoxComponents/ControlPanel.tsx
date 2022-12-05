@@ -1,23 +1,24 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Checkbox,
-  ColorModeScript,
   Flex,
   HStack,
   IconButton,
-  Input,
   Slider,
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
   Text,
   Tooltip,
+  Wrap,
 } from "@chakra-ui/react";
-import { css } from "@emotion/react";
 import * as React from "react";
 import { useContext, useEffect } from "react";
 import { HiFastForward, HiPause, HiPlay, HiRewind } from "react-icons/hi";
 import { IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
+import { LayerPopOver } from "../ComponentTitle";
 import { PlayContext } from "./MapboxComponent";
 
 export function formatTime(time: string | number | Date) {
@@ -107,6 +108,7 @@ function ControlPanel(props: {
   setSelectedTime: React.Dispatch<React.SetStateAction<number>>;
   allDays: boolean;
   setIsAllDays: React.Dispatch<React.SetStateAction<boolean>>;
+  isHistorical: boolean;
 }) {
   const { startTime, endTime, allDays, setSelectedTime, selectedTime, setIsAllDays } = props;
 
@@ -129,18 +131,24 @@ function ControlPanel(props: {
       }
     }, 200);
     return () => clearInterval(interval);
-  }, [isPlay, selectedDay, selectedTime, setSelectedTime, startTime]);
+  }, [isPlay, selectedDay, selectedTime, startTime]);
 
   return (
     <Box bg={"green"} p={4}>
-      <Flex direction={"row"} justifyContent={"space-between"}>
+      <Wrap direction={"row"} justifyContent={"space-between"} justify={"space-between"} justifyItems={"center"}>
         <HStack>
           <Text fontSize={"md"} color={"white"}>
-            Current
+            Current:
           </Text>
           <Text fontSize={"md"} color={"white"} fontWeight={"semibold"}>
             {formatTime(selectedTime)}
           </Text>
+        </HStack>
+        <HStack>
+          <Alert status="info" color="white" bgColor={"graygreen"} rounded="md" py={"10px"}>
+            <AlertIcon color={"white"} />
+            {props.isHistorical ? "You are viewing historical data" : "You are viewing predictions"}
+          </Alert>
         </HStack>
         <HStack>
           <Checkbox
@@ -151,10 +159,10 @@ function ControlPanel(props: {
             }}>
             Display All Days
           </Checkbox>
-          <PlayerControls able={allDays} setSelectedTime={setSelectedTime} startTime={startTime} endTime={endTime} selectedTime={selectedTime} />
+          <LayerPopOver popOverContent={"To be filled"} />
         </HStack>
         {/*{formatTime(startTime)} to {formatTime(endTime)}*/}
-      </Flex>
+      </Wrap>
 
       <Slider
         my={2}
@@ -177,8 +185,9 @@ function ControlPanel(props: {
         </SliderTrack>
         <SliderThumb boxSize={4} />
       </Slider>
-      <Flex direction={"row"} justifyContent={"space-around"} mb={4}>
-        <Flex direction={"row"} w={"25em"} alignItems={"center"} justifyContent={"center"}>
+      <Flex direction={"row"} justifyContent={"space-around"}>
+        <PlayerControls able={allDays} setSelectedTime={setSelectedTime} startTime={startTime} endTime={endTime} selectedTime={selectedTime} />
+        {/* <Flex direction={"row"} w={"25em"} alignItems={"center"} justifyContent={"center"}>
           <Text fontSize={"md"} color={"white"} mr={2}>
             Start Time
           </Text>
@@ -216,7 +225,7 @@ function ControlPanel(props: {
               }
             `}
           />
-        </Flex>
+        </Flex> */}
       </Flex>
     </Box>
   );

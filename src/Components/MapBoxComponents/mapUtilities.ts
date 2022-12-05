@@ -16,7 +16,6 @@ export function filterFeaturesByDay(featureCollection: { features: any[] }, time
 }
 
 export function filterQuickStatsByBounds(data: { type: string; features: any[] } | null | undefined, mapBounds: mapboxgl.LngLatBounds | undefined) {
-  console.log(data, mapBounds?.getNorthEast(), "function test");
   if (mapBounds === undefined) {
     return { temp: "0", precipitation: "0", wind_speed: "0", soil_moisture: "0" };
   }
@@ -37,7 +36,7 @@ export function filterQuickStatsByBounds(data: { type: string; features: any[] }
   });
 
   let getAverage = (arr: any) => {
-    if (arr.length === 0 || arr === undefined) {
+    if (arr === undefined || arr.length === 0) {
       return 0;
     }
     let reducer = (total: number, currentValue: number) => total + currentValue;
@@ -56,4 +55,34 @@ export function filterQuickStatsByBounds(data: { type: string; features: any[] }
     wind_speed: getAverage(wind_speed),
     soil_moisture: getAverage(soil_moisture),
   };
+}
+
+export function getTopFeaturesByBounds(data: { type: string; features: any[] } | null | undefined, mapBounds: mapboxgl.LngLatBounds | undefined) {
+  if (mapBounds === undefined) {
+    return { temp: "0", precipitation: "0", wind_speed: "0", soil_moisture: "0" };
+  }
+
+  const poly = polygon([
+    [
+      [mapBounds.getNorthEast().lng, mapBounds.getNorthEast().lat],
+      [mapBounds.getNorthWest().lng, mapBounds.getNorthWest().lat],
+      [mapBounds.getSouthWest().lng, mapBounds.getSouthWest().lat],
+      [mapBounds.getSouthEast().lng, mapBounds.getSouthEast().lat],
+      [mapBounds.getNorthEast().lng, mapBounds.getNorthEast().lat],
+    ],
+  ]);
+
+  const filteredData = data?.features.filter((feature: { geometry: { coordinates: number[] } }) => {
+    const feature_point = point([feature.geometry.coordinates[0], feature.geometry.coordinates[1]]);
+    return booleanPointInPolygon(feature_point, poly);
+  });
+
+  const filteredTopData = filteredData
+    ?.sort(function (a, b) {
+      return a.properties.confidence - b.properties.confidence;
+    })
+    .slice(-10);
+
+  console.log(filteredTopData, "prediction overview function test");
+  return filteredTopData;
 }
