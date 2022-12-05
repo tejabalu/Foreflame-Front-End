@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import ControlPanel, { formatTime } from "./ControlPanel";
 import { circleLayer, heatmapLayer, skyLayer } from "./map-style";
 // @ts-ignore
@@ -25,60 +25,44 @@ import { MapDrawFunctions } from "./MapDrawFunctions";
 
 export const PlayContext = createContext<Partial<{ isPlay: boolean; setIsPlay: React.Dispatch<React.SetStateAction<boolean>> }>>({});
 
-function filterFeaturesByDay(featureCollection: { features: any[] }, time: number | string | Date) {
-  console.log(time);
-  const date = new Date(time);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  const features = featureCollection.features.filter((feature: { properties: { time: string | number | Date } }) => {
-    const featureDate = new Date(feature.properties.time);
-    // console.log(featureDate, "selection triggered");
-
-    return featureDate.getFullYear() === year && featureDate.getMonth() === month && featureDate.getDate() === day;
-  });
-  return { type: "FeatureCollection", features };
-}
-
 interface MapComponentInterface {
   mapTheme: String;
   setBookmarks: any;
   selectedBookmarks: string;
+  data: { type: string; features: any[] } | null | undefined;
+  timeRange: number[];
+  selectedTime: number;
+  isAllDays: boolean;
+  setSelectedTime: React.Dispatch<React.SetStateAction<number>>;
+  setIsAllDays: React.Dispatch<React.SetStateAction<boolean>>;
+  setMapBounds: any;
 }
 
-export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookmarks }: MapComponentInterface) {
-  const [isAllDays, setIsAllDays] = useState(false);
-  const [timeRange, setTimeRange] = useState([0, 0]);
-  const [selectedTime, setSelectedTime] = useState(0);
-  const [firePredictions, setFirePredictions] = useState(null);
+export default function MapboxComponent({
+  mapTheme,
+  setBookmarks,
+  selectedBookmarks,
+  data,
+  timeRange,
+  selectedTime,
+  isAllDays,
+  setSelectedTime,
+  setIsAllDays,
+  setMapBounds,
+}: MapComponentInterface) {
   const [isPlay, setIsPlay] = useState(false);
   const [drawFeatures, setDrawFeatures] = useState({});
-  const [popupFeatures, setPopupFeatures] = useState<[boolean, number, number, number, number]>([false, 0, 0, 0, 0]);
-
-  useEffect(() => {
-    fetch("https://foreflame.eastus.cloudapp.azure.com/static/single_instance.geojson")
-      .then((resp) => resp.json())
-      .then((json) => {
-        // TODO: validate the JSON data first
-        const features = json.features;
-        const startTime = features[0].properties.time;
-        const endTime = features[features.length - 1].properties.time;
-        console.log(new Date(startTime), new Date(endTime), "first download test");
-
-        setTimeRange([startTime, endTime]);
-        setFirePredictions(json);
-        setSelectedTime(endTime);
-      })
-      .catch((err) => console.error("Could not load data", err));
-  }, []);
-
-  const data = useMemo(() => {
-    if (isAllDays) {
-      return firePredictions;
-    } else if (firePredictions) {
-      return filterFeaturesByDay(firePredictions, selectedTime);
-    }
-  }, [firePredictions, isAllDays, selectedTime]);
+  const [popupFeatures, setPopupFeatures] = useState({
+    show: false,
+    lng: 0,
+    lat: 0,
+    mag: 0,
+    time: 0,
+    temp: 0,
+    precipitation: 0,
+    wind_speed: 0,
+    soil_moisture: 0,
+  });
 
   // Map drawing stuff
 
@@ -135,12 +119,22 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
   const popupEvent = (e: MapLayerMouseEvent) => {
     e.originalEvent.stopPropagation();
     const clickedFeature = mapRef.current?.queryRenderedFeatures(e.point, { layers: ["circle"] });
-    setPopupFeatures([false, 0, 0, 0, 0]);
+    setPopupFeatures({ show: false, lng: 0, lat: 0, mag: 0, time: 0, temp: 0, precipitation: 0, wind_speed: 0, soil_moisture: 0 });
     if (clickedFeature && clickedFeature[0]) {
       // @ts-ignore
-      console.log(clickedFeature[0].layer.id, clickedFeature[0].properties.mag, clickedFeature[0].properties.time, "mouse event test");
+      console.log(clickedFeature[0], clickedFeature[0].properties.mag, clickedFeature[0].properties.time, "mouse event test");
       // @ts-ignore
-      setPopupFeatures([true, e.lngLat.lng, e.lngLat.lat, clickedFeature[0].properties.mag, clickedFeature[0].properties.time]);
+      setPopupFeatures({
+        show: true,
+        lng: e.lngLat.lng,
+        lat: e.lngLat.lat,
+        mag: clickedFeature[0].properties ? clickedFeature[0].properties.confidence : 0,
+        time: clickedFeature[0].properties ? clickedFeature[0].properties.time : 0,
+        temp: clickedFeature[0].properties ? clickedFeature[0].properties.temp : 0,
+        precipitation: clickedFeature[0].properties ? clickedFeature[0].properties.precipitation : 0,
+        wind_speed: clickedFeature[0].properties ? clickedFeature[0].properties.wind_speed : 0,
+        soil_moisture: clickedFeature[0].properties ? clickedFeature[0].properties.soil_moisture : 0,
+      });
       console.log(popupFeatures, e, "mouse clicked");
     }
   };
@@ -164,7 +158,13 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
               {...(mapTheme === "mapbox://styles/mapbox/satellite-v9" && {
                 maxPitch: 85,
                 terrain: { source: "mapbox-dem", exaggeration: 1.5 },
-              })}>
+              })}
+              onLoad={() => {
+                setMapBounds(mapRef.current?.getBounds());
+              }}
+              onMoveEnd={(e: any) => {
+                setMapBounds(mapRef.current?.getBounds());
+              }}>
               <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
               <GeolocateControl position="bottom-left" />
               <FullscreenControl position="bottom-left" />
@@ -177,7 +177,6 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
                   polygon: true,
                   trash: true,
                 }}
-                defaultMode="draw_polygon"
                 onCreate={onUpdate}
                 onUpdate={onUpdate}
                 onDelete={onDelete}
@@ -192,12 +191,7 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
                 </Source>
               )}
 
-              {popupFeatures[0] && (
-                <Popup longitude={popupFeatures[1]} latitude={popupFeatures[2]} anchor="bottom">
-                  The confidence of prediction for this point is {(popupFeatures[3] * 100).toString().substring(0, 4)}%. <br />
-                  Time: {formatTime(popupFeatures[4])}
-                </Popup>
-              )}
+              {popupFeatures.show && PopUpFunction(popupFeatures, setPopupFeatures)}
 
               {mapTheme === "mapbox://styles/mapbox/satellite-v9" && (
                 <>
@@ -226,5 +220,54 @@ export default function MapboxComponent({ mapTheme, setBookmarks, selectedBookma
         />
       </Flex>
     </PlayContext.Provider>
+  );
+}
+
+function PopUpFunction(
+  popupFeatures: {
+    show: boolean;
+    lng: number;
+    lat: number;
+    mag: number;
+    time: number;
+    temp: number;
+    precipitation: number;
+    wind_speed: number;
+    soil_moisture: number;
+  },
+  setPopupFeatures: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      lng: number;
+      lat: number;
+      mag: number;
+      time: number;
+      temp: number;
+      precipitation: number;
+      wind_speed: number;
+      soil_moisture: number;
+    }>
+  >
+) {
+  return (
+    <Popup
+      longitude={popupFeatures.lng}
+      latitude={popupFeatures.lat}
+      anchor="bottom"
+      onClose={() => {
+        setPopupFeatures({ show: false, lng: 0, lat: 0, mag: 0, time: 0, temp: 0, precipitation: 0, wind_speed: 0, soil_moisture: 0 });
+      }}>
+      {popupFeatures.mag >= 0 && "The confidence of prediction for this point is " + (popupFeatures.mag * 100).toString().substring(0, 4) + "%."}
+      {popupFeatures.mag >= 0 && <br />}
+      Time: {formatTime(popupFeatures.time)}
+      <br />
+      Temperature: {popupFeatures.temp.toPrecision(3)}
+      <br />
+      Precipitation: {popupFeatures.precipitation.toPrecision(3)}
+      <br />
+      Wind Speed: {popupFeatures.wind_speed.toPrecision(3)}
+      <br />
+      Soil Moisture: {popupFeatures.soil_moisture.toPrecision(3)}
+    </Popup>
   );
 }

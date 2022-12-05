@@ -1,16 +1,21 @@
 import { Center, Flex, Image, Stack, StackDivider, Text } from "@chakra-ui/react";
+import { filterQuickStatsByBounds } from "./MapBoxComponents/mapUtilities";
 
-function StatItem(props: { title: string; value: string; icon: any }) {
+function StatItem({ title, value, icon }: { title: string; value: number | string; icon: any }) {
+  if (typeof value === "number") {
+    value = value.toPrecision(3);
+  }
+
   return (
     <Center w={"full"}>
       <Flex direction={"column"} alignItems={"center"}>
         <Text fontWeight={"semibold"} fontSize={"sm"} mb={2}>
-          {props.title}
+          {title}
         </Text>
         <Flex direction="row" alignItems={"center"} justifyContent={"center"}>
-          <Image src={props.icon} h={"35px"} pr={2} />
+          <Image src={icon} h={"35px"} pr={2} />
           <Text fontWeight={"bold"} fontSize={"2xl"}>
-            {props.value}
+            {value}
           </Text>
         </Flex>
       </Flex>
@@ -18,7 +23,14 @@ function StatItem(props: { title: string; value: string; icon: any }) {
   );
 }
 
-export function QuickStats() {
+interface QuickStatsInterface {
+  data: { type: string; features: any[] } | null | undefined;
+  mapBounds: mapboxgl.LngLatBounds | undefined;
+}
+
+export function QuickStats({ data, mapBounds }: QuickStatsInterface) {
+  const { temp, precipitation, wind_speed, soil_moisture } = filterQuickStatsByBounds(data, mapBounds);
+
   return (
     <Stack
       direction={"row"}
@@ -29,10 +41,10 @@ export function QuickStats() {
       mb={1}
       p={1}
       bg={"gray.100"}>
-      <StatItem title={"Avg. Temperature (C)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/temperature.svg"} />
-      <StatItem title={"Avg. Humidity (%)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/humidity.svg"} />
-      <StatItem title={"Avg. Wind Speed (m/s)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/wind.svg"} />
-      <StatItem title={"Avg. Soil Moisture (hPa)"} value={"24.78"} icon={"../Assets/QuickStatsLogos/pressure.svg"} />
+      <StatItem title={"Avg. Temperature (F)"} value={temp} icon={"../Assets/QuickStatsLogos/temperature.svg"} />
+      <StatItem title={"Avg. Precipitation (kg/m^2)"} value={precipitation} icon={"../Assets/QuickStatsLogos/humidity.svg"} />
+      <StatItem title={"Avg. Wind Speed (m/s)"} value={wind_speed} icon={"../Assets/QuickStatsLogos/wind.svg"} />
+      <StatItem title={"Avg. Soil Moisture (hPa)"} value={soil_moisture} icon={"../Assets/QuickStatsLogos/pressure.svg"} />
       {/* TODO: change soil moisture logo */}
       icon
     </Stack>

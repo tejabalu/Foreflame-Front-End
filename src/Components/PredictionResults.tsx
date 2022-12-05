@@ -10,7 +10,7 @@ interface PredictionResultsInterface {
 
 export function PredictionResults({ bookmarks, setSelectedBookmarks }: PredictionResultsInterface) {
   return (
-    <Flex direction={"column"} flex={1} minH={0} borderRadius={"xl"} m={1}>
+    <Flex direction={"column"} flex={0.8} minH={0} borderRadius={"xl"} m={1}>
       <ResultsUtilities />
       <BookmarkFeatures bookmarks={bookmarks} setSelectedBookmarks={setSelectedBookmarks} />
       <Warnings />
