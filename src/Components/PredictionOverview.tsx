@@ -19,7 +19,7 @@ function PredictionStat(props: {
   const confidencePercentage = parseInt((confidence * 100).toPrecision(2));
 
   const colorInterpolate = require("color-interpolate");
-  const colorRange = colorInterpolate(["rgb(0,128,255)", "rgb(0,58,255)", "rgb(0,255,89)", "rgb(255,242,0)", "rgb(255,106,0)", "rgb(255,0,0)"]);
+  const colorRange = colorInterpolate(["rgb(172, 207, 241)", "rgb(0,58,255)", "rgb(0,255,89)", "rgb(255,242,0)", "rgb(255,150,0)", "rgb(255,0,0)"]);
   console.log(colorRange(0.1), colorRange(0.6), colorRange(0.8));
   const color = colorRange(confidence * 1.2);
 
