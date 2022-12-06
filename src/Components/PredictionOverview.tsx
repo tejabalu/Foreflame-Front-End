@@ -102,7 +102,7 @@ export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInte
     const precipitation = feature.properties.precipitation ? feature.properties.precipitation : 0;
 
     return (
-      <VStack key={index}>
+      <VStack key={index} p={1}>
         <PredictionStat
           date={date}
           confidence={confidence}
