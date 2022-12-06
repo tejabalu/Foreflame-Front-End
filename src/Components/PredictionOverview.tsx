@@ -1,4 +1,4 @@
-import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
+import { Center, Flex, HStack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import { BsMoisture } from "react-icons/bs";
 import { IoRainy } from "react-icons/io5";
 import { RiWindyLine } from "react-icons/ri";
@@ -56,22 +56,30 @@ function PredictionStat(props: {
           )}
         </Flex>
         <Flex direction={"column"} pt={2}>
-          <HStack>
-            <TbTemperature />
-            <Text>{temperature} °F</Text>
-          </HStack>
-          <HStack>
-            <IoRainy />
-            <Text>{precipitation.toPrecision(3)} (m/s)</Text>
-          </HStack>
-          <HStack>
-            <RiWindyLine />
-            <Text>{wind.toPrecision(3)} (m/s)</Text>
-          </HStack>
-          <HStack>
-            <BsMoisture />
-            <Text>{soil_moisture.toPrecision(3)} (m/s)</Text>
-          </HStack>
+          <Tooltip label="Temperature">
+            <HStack>
+              <TbTemperature />
+              <Text>{temperature} °F</Text>
+            </HStack>
+          </Tooltip>
+          <Tooltip label="Precipitation">
+            <HStack>
+              <IoRainy />
+              <Text>{precipitation.toPrecision(3)} (m/s)</Text>
+            </HStack>
+          </Tooltip>
+          <Tooltip label="Wind Speed">
+            <HStack>
+              <RiWindyLine />
+              <Text>{wind.toPrecision(3)} (m/s)</Text>
+            </HStack>
+          </Tooltip>
+          <Tooltip label="Soil Moisture">
+            <HStack>
+              <BsMoisture />
+              <Text>{soil_moisture.toPrecision(3)} (m/s)</Text>
+            </HStack>
+          </Tooltip>
         </Flex>
       </Flex>
     </Center>
@@ -86,8 +94,7 @@ interface DailyRiskHighlightsInterface {
 export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInterface) {
   //TODO set states for temp, humid, wind, prob
   const heading = "Highlights";
-  const popOverContent =
-    "Displays the top 15 high risk areas for the selected feature, or the top 15 high risk areas for the whole state of Washington if none are selected.";
+  const popOverContent = "Displays the highlights for the selected day and for regions in the map bounds.";
 
   const highlights = getUniqueFeaturesByBounds(data, mapBounds);
   console.log(highlights, "test");

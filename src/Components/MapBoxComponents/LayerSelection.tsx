@@ -40,7 +40,7 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
       <Box borderRadius={"lg"} bg={"graygreen"} flex={1} p={2}>
         {ComponentTitle({ heading, popOverContent })}
 
-        <Accordion allowToggle defaultIndex={0}>
+        <Accordion allowToggle>
           <AccordionItem border={"none"}>
             <ToggleButton text="Map Themes" />
             <AccordionPanel pb={4}>

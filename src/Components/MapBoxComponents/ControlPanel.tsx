@@ -40,7 +40,7 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
   const ToolTipStyles = {
     bg: "gray.100",
     color: "gray.800",
-    openDelay: 1000,
+    openDelay: 300,
   };
 
   return (
@@ -151,22 +151,30 @@ function ControlPanel(props: {
           </Alert>
         </HStack>
         <HStack>
-          <Checkbox
-            color={"white"}
-            colorScheme={"orange"}
-            onChange={(e) => {
-              setIsAllDays(e.target.checked);
-            }}>
-            Display All Days
-          </Checkbox>
-          <LayerPopOver popOverContent={"To be filled"} />
+          <Tooltip bg="gray.100" color="gray.800" openDelay={300} label="Display map data for all days">
+            <span>
+              <Checkbox
+                color={"white"}
+                colorScheme={"orange"}
+                onChange={(e) => {
+                  setIsAllDays(e.target.checked);
+                }}>
+                Display All Days
+              </Checkbox>
+            </span>
+          </Tooltip>
+          <LayerPopOver
+            popOverContent={
+              "This section contains options to filter the data on the map based on days. The timeline slider or the control buttons can be used to move the days forward and backward, while choosing 'Display all days' shows data for all the days combined."
+            }
+          />
         </HStack>
         {/*{formatTime(startTime)} to {formatTime(endTime)}*/}
       </Wrap>
 
       <Slider
         my={2}
-        defaultValue={1}
+        defaultValue={totalDays}
         min={0}
         max={totalDays}
         step={1}
