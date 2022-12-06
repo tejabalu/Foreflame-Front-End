@@ -91,7 +91,7 @@ function PlayerControls(props: { able: boolean; setSelectedTime: any; startTime:
         <IconButton
           {...IconButtonStyles}
           onClick={() => {
-            props.setSelectedTime();
+            props.setSelectedTime(props.endTime);
           }}
           aria-label={"Play"}
           icon={<HiFastForward />}
@@ -147,7 +147,7 @@ function ControlPanel(props: {
         <HStack>
           <Alert status="info" color="white" bgColor={"graygreen"} rounded="md" py={"10px"}>
             <AlertIcon color={"white"} />
-            {props.isHistorical ? "You are viewing historical data" : "You are viewing predictions"}
+            {allDays ? "You are viewing data for all days" : props.isHistorical ? "You are viewing historical data" : "You are viewing predictions"}
           </Alert>
         </HStack>
         <HStack>
@@ -173,7 +173,6 @@ function ControlPanel(props: {
         value={selectedDay}
         isDisabled={allDays}
         onChange={(e) => {
-          console.log(selectedTime);
           setSelectedTime(startTime + e * day);
           if (setIsPlay) {
             setIsPlay(false);

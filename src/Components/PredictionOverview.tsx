@@ -1,20 +1,27 @@
 import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
+import { BsMoisture } from "react-icons/bs";
+import { IoRainy } from "react-icons/io5";
 import { RiWindyLine } from "react-icons/ri";
 import { TbTemperature } from "react-icons/tb";
-import { WiHumidity } from "react-icons/wi";
 import { ComponentTitle } from "./ComponentTitle";
-import { getTopFeaturesByBounds } from "./MapBoxComponents/mapUtilities";
+import { formatTime } from "./MapBoxComponents/ControlPanel";
+import { getUniqueFeaturesByBounds } from "./MapBoxComponents/mapUtilities";
 
-function PredictionStat(props: { date: string; probability: number; temperature: number; wind: number; humidity: number }) {
-  const { date, probability, temperature, wind, humidity } = props;
-  let color: string;
-  if (probability < 50) {
-    color = "white";
-  } else if (probability < 80) {
-    color = "yellow";
-  } else {
-    color = "#ff1e00";
-  }
+function PredictionStat(props: {
+  date: string;
+  confidence: number;
+  temperature: number;
+  wind: number;
+  precipitation: number;
+  soil_moisture: number;
+}) {
+  const { date, confidence, temperature, wind, precipitation, soil_moisture } = props;
+  const confidencePercentage = parseInt((confidence * 100).toPrecision(2));
+
+  const colorInterpolate = require("color-interpolate");
+  const colorRange = colorInterpolate(["rgb(0,128,255)", "rgb(0,58,255)", "rgb(0,255,89)", "rgb(255,242,0)", "rgb(255,106,0)", "rgb(255,0,0)"]);
+  console.log(colorRange(0.1), colorRange(0.6), colorRange(0.8));
+  const color = colorRange(confidence * 1.2);
 
   return (
     <Center flexDirection={"column"} bg={"graygreen"} borderRadius={"lg"} p={2}>
@@ -27,11 +34,26 @@ function PredictionStat(props: { date: string; probability: number; temperature:
           alignItems={"center"}
           justifyContent={"center"}
           mr={4}
-          color={color}
-          fontWeight={probability > 80 ? "semibold" : "md"}>
-          <Text fontSize={"3xl"}>{probability}%</Text>
-          <Text fontSize={"sm"}>Wildfire</Text>
-          <Text fontSize={"sm"}>Possibility</Text>
+          color={confidence > 0 ? color : "white"}
+          fontWeight={confidence > 80 ? "semibold" : "md"}>
+          {confidencePercentage > 0 ? (
+            <>
+              <Text fontWeight={"semibold"} fontSize={"3xl"}>
+                {(confidence * 100).toPrecision(2)}%
+              </Text>
+              <Text fontWeight={"semibold"} fontSize={"sm"}>
+                Prediction
+              </Text>
+              <Text fontWeight={"semibold"} fontSize={"sm"}>
+                Confidence
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text fontSize={"sm"}>Historical</Text>
+              <Text fontSize={"sm"}>Data</Text>
+            </>
+          )}
         </Flex>
         <Flex direction={"column"} pt={2}>
           <HStack>
@@ -39,12 +61,16 @@ function PredictionStat(props: { date: string; probability: number; temperature:
             <Text>{temperature} °F</Text>
           </HStack>
           <HStack>
-            <RiWindyLine />
-            <Text>{wind} (m/s)</Text>
+            <IoRainy />
+            <Text>{precipitation.toPrecision(3)} (m/s)</Text>
           </HStack>
           <HStack>
-            <WiHumidity />
-            <Text>{humidity}%</Text>
+            <RiWindyLine />
+            <Text>{wind.toPrecision(3)} (m/s)</Text>
+          </HStack>
+          <HStack>
+            <BsMoisture />
+            <Text>{soil_moisture.toPrecision(3)} (m/s)</Text>
           </HStack>
         </Flex>
       </Flex>
@@ -52,36 +78,47 @@ function PredictionStat(props: { date: string; probability: number; temperature:
   );
 }
 
-interface PredictionOverviewInterface {
+interface DailyRiskHighlightsInterface {
   data: { type: string; features: any[] } | null | undefined;
   mapBounds: mapboxgl.LngLatBounds | undefined;
 }
 
-export function PredictionOverview({ data, mapBounds }: PredictionOverviewInterface) {
+export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInterface) {
   //TODO set states for temp, humid, wind, prob
-  const heading = "Daily risk highlights";
+  const heading = "Highlights";
   const popOverContent =
     "Displays the top 15 high risk areas for the selected feature, or the top 15 high risk areas for the whole state of Washington if none are selected.";
 
-  const highlights = getTopFeaturesByBounds(data, mapBounds);
-  console.log(highlights);
+  const highlights = getUniqueFeaturesByBounds(data, mapBounds);
+  console.log(highlights, "test");
 
-  let probability = () => {
-    return Math.floor(Math.random() * 100);
-  };
+  const predictionStat = highlights?.map((feature: any) => {
+    const dateTime = formatTime(feature.properties.time);
+    const date = dateTime !== undefined ? dateTime : "--";
+    const confidence = feature.properties.confidence ? feature.properties.confidence : 0;
+    const temp = feature.properties.temp ? feature.properties.temp : 0;
+    const wind_speed = feature.properties.wind_speed ? feature.properties.wind_speed : 0;
+    const soil_moisture = feature.properties.soil_moisture ? feature.properties.soil_moisture : 0;
+    const precipitation = feature.properties.precipitation ? feature.properties.precipitation : 0;
+
+    return (
+      <PredictionStat
+        date={date}
+        confidence={confidence}
+        temperature={temp}
+        wind={wind_speed}
+        precipitation={precipitation}
+        soil_moisture={soil_moisture}
+      />
+    );
+  });
 
   return (
     <Flex direction={"column"} overflow={"auto"} mt={1} mb={2} p={4} borderRadius={"lg"} w={"100%"} h={"100%"} bg={"green"}>
       {ComponentTitle({ heading, popOverContent })}
 
       <Flex flex={1} direction={"column"} color={"white"} mt={4} mb={2} justifyContent={"flex-start"} alignItems={"center"}>
-        <VStack>
-          <PredictionStat date={"Today"} probability={probability()} temperature={95} wind={1.44} humidity={23.8} />
-          <PredictionStat date={"Wednesday 10"} probability={probability()} temperature={99} wind={1.32} humidity={24.9} />
-          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-          <PredictionStat date={"Thursday 11"} probability={probability()} temperature={105} wind={1.62} humidity={20.1} />
-        </VStack>
+        <VStack>{predictionStat}</VStack>
       </Flex>
     </Flex>
   );

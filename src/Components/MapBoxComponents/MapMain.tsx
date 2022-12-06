@@ -6,7 +6,7 @@ import MapboxComponent from "./MapboxComponent";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import mapboxgl from "mapbox-gl";
 import { MapProvider } from "react-map-gl";
-import { PredictionOverview } from "../PredictionOverview";
+import { DailyRiskHighlights } from "../PredictionOverview";
 import { LayerSelection } from "./LayerSelection";
 import { filterFeaturesByDay } from "./mapUtilities";
 // import "./SearchBoxStyles.css";
@@ -41,7 +41,7 @@ export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
   const [mapBounds, setMapBounds] = useState<mapboxgl.LngLatBounds>();
 
   useEffect(() => {
-    fetch("https://foreflame.eastus.cloudapp.azure.com/static/assembled_data1000largest.geojson")
+    fetch("https://foreflame.eastus.cloudapp.azure.com/static/assembled_data2000largest_full.geojson")
       .then((resp) => resp.json())
       .then((json) => {
         // TODO: validate the JSON data first
@@ -69,7 +69,7 @@ export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
     <MapProvider>
       <Flex direction={"column"} flex={0.8} w={"100%"} borderRadius={"xl"} m={1} h={"full"} alignItems={"flex-start"}>
         <LayerSelection setMapTheme={setMapTheme} />
-        <PredictionOverview data={data} mapBounds={mapBounds} />
+        <DailyRiskHighlights data={data} mapBounds={mapBounds} />
       </Flex>
       <Flex flex={2.5} flexDirection={"column"} m={1}>
         <QuickStats data={data} mapBounds={mapBounds} />

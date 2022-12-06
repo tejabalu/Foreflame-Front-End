@@ -57,9 +57,9 @@ export function filterQuickStatsByBounds(data: { type: string; features: any[] }
   };
 }
 
-export function getTopFeaturesByBounds(data: { type: string; features: any[] } | null | undefined, mapBounds: mapboxgl.LngLatBounds | undefined) {
+export function getUniqueFeaturesByBounds(data: { type: string; features: any[] } | null | undefined, mapBounds: mapboxgl.LngLatBounds | undefined) {
   if (mapBounds === undefined) {
-    return { temp: "0", precipitation: "0", wind_speed: "0", soil_moisture: "0" };
+    return [];
   }
 
   const poly = polygon([
@@ -79,10 +79,15 @@ export function getTopFeaturesByBounds(data: { type: string; features: any[] } |
 
   const filteredTopData = filteredData
     ?.sort(function (a, b) {
-      return a.properties.confidence - b.properties.confidence;
+      return b.properties.confidence - a.properties.confidence;
     })
-    .slice(-10);
+    .slice(0, 10);
 
-  console.log(filteredTopData, "prediction overview function test");
+  const set = new Set();
+  const filteredUniqueData = filteredData?.filter((f: any) => !set.has(f.properties.confidence) && set.add(f.properties.confidence));
+
+  if (filteredUniqueData && filteredUniqueData[0] !== undefined && filteredUniqueData[0].properties.confidence != -1) {
+    return filteredUniqueData;
+  }
   return filteredTopData;
 }

@@ -150,9 +150,9 @@ export default function MapboxComponent({
               ref={mapRef}
               id={"mapRef"}
               initialViewState={{
-                latitude: 50,
-                longitude: -120,
-                zoom: 4,
+                latitude: 47.5,
+                longitude: -121,
+                zoom: 6.5,
               }}
               mapStyle={mapTheme}
               mapboxAccessToken={MAPBOX_TOKEN}
