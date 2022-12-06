@@ -65,7 +65,7 @@ function PredictionStat(props: {
           <Tooltip label="Precipitation">
             <HStack>
               <IoRainy />
-              <Text>{precipitation.toPrecision(3)} (m/s)</Text>
+              <Text>{precipitation.toPrecision(3)} (kg/m^2)</Text>
             </HStack>
           </Tooltip>
           <Tooltip label="Wind Speed">
@@ -77,7 +77,7 @@ function PredictionStat(props: {
           <Tooltip label="Soil Moisture">
             <HStack>
               <BsMoisture />
-              <Text>{soil_moisture.toPrecision(3)} (m/s)</Text>
+              <Text>{soil_moisture.toPrecision(3)} (kg/m^2)</Text>
             </HStack>
           </Tooltip>
         </Flex>
