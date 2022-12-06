@@ -92,7 +92,7 @@ export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInte
   const highlights = getUniqueFeaturesByBounds(data, mapBounds);
   console.log(highlights, "test");
 
-  const predictionStat = highlights?.map((feature: any) => {
+  const predictionStat = highlights?.map((feature: any, index) => {
     const dateTime = formatTime(feature.properties.time);
     const date = dateTime !== undefined ? dateTime : "--";
     const confidence = feature.properties.confidence ? feature.properties.confidence : 0;
@@ -102,14 +102,16 @@ export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInte
     const precipitation = feature.properties.precipitation ? feature.properties.precipitation : 0;
 
     return (
-      <PredictionStat
-        date={date}
-        confidence={confidence}
-        temperature={temp}
-        wind={wind_speed}
-        precipitation={precipitation}
-        soil_moisture={soil_moisture}
-      />
+      <VStack key={index}>
+        <PredictionStat
+          date={date}
+          confidence={confidence}
+          temperature={temp}
+          wind={wind_speed}
+          precipitation={precipitation}
+          soil_moisture={soil_moisture}
+        />
+      </VStack>
     );
   });
 
@@ -118,7 +120,7 @@ export function DailyRiskHighlights({ data, mapBounds }: DailyRiskHighlightsInte
       {ComponentTitle({ heading, popOverContent })}
 
       <Flex flex={1} direction={"column"} color={"white"} mt={4} mb={2} justifyContent={"flex-start"} alignItems={"center"}>
-        <VStack>{predictionStat}</VStack>
+        {predictionStat}
       </Flex>
     </Flex>
   );
