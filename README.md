@@ -1,46 +1,94 @@
-# Getting Started with Create React App
+---
+date: March 17, 2022
+description: ForeFlame is a dashboard designed for Fire Analysts to view the probabilities of wildfire occurrences to make informed tactical decisions on wildfire management and mitigation.
+thumbnailURL: "/README_Assets/title.png"
+tags: ["Full-Stack", "Product Design", "Virtual Reality"]
+order: 8
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ForeFlame: Wildfire Prediction Dashboard
 
-## Available Scripts
+![](/README_Assets/1.png)
 
-In the project directory, you can run:
+> ForeFlame is a dashboard designed for Fire Analysts to view the probabilities of wildfire occurrences, along with other relevant parameters like vegetation, terrain, temperature, wind speed, and soil moisture, to make informed tactical decisions on wildfire management and mitigation.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## About the Team
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+We are a team of University of Washington graduate students (Global Innovation Exchange) driven to understand the behavior of Wildfires. This project is being sponsored by **Microsoft** and supported by Department of Natural Resources.
 
-### `npm test`
+Our Vision is to Provide a fire management tool to predict the probability of wildfire occurrence and provide a comprehensive data source for fire analysts to make informed tactical decisions.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Given the complexity of gathering and analyzing data for accreditation and the growing sophistication of technology systems available to fire departments, ForeFlame believes a standard visualization for fire analysts is an important next step in mitigating Wildfires.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Architecture
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+ForeFlame uses various data aggregation techniques and machine learning methods to provide the possibility of occurrence of wildfires. There are three main components in its architecture:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Data Sources and Machine Learning
 
-### `npm run eject`
+![Data Sourcing and Machine Learning Architecture](/README_Assets/2.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The following are the different data sets currently being used to train and infer from the machine learning model.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Weather data from [NOAA](https://www.ncdc.noaa.gov/cdo-web/datasets).
+- NDVI (Normalized difference vegetation index) from [MODIS](https://modis.gsfc.nasa.gov/)
+- Wildfire fuel data from [LANDFIRE](https://landfire.gov/%3C/ListItem%3E).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+From the datasets above, a DNN model is used to predict the probability of occurrence of wildfires, with another KNN model trained with NDVI datasets which acts as a mask to the existing predictions.
+The machine learning model itself is run in Azure VM using FarmVibes workflows.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Postprocessing and back-end APIs
 
-## Learn More
+![Post processing ML outputs to GeoJSON](/README_Assets/3.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The machine learning outputs are converted to GeoJSON, and hosted through a Flask application, exposed through NGINX server (Azure VM).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Visualization
+
+![Front-end Architecture](/README_Assets/4.png)
+
+The data is displayed through the Webapp built using NextJS and mapping tools from [MapBox](https://visgl.github.io/react-map-gl/) and [Turf.js](https://turfjs.org/).
+
+---
+
+## Features
+
+The following are the functionalities currently implemented in ForeFlame.
+
+### Secure OAuth 2.0
+
+![](/README_Assets/oauth.png)
+
+Secure authentication using Google Firebase for storing user preferences and bookmark polygons.
+
+### Popup for each data points
+
+![](/README_Assets/popup.gif)
+
+View individual parameters of each pixels by clicking on each data point.
+
+### Create bookmarks
+
+![](/README_Assets/createbookmarks.gif)
+
+Create bookmarks using polygons, which are linked to individual accounts and can be accessed anywhere.
+
+### Navigate using bookmarks
+
+![](/README_Assets/bookmarks.gif)
+
+Use bookmarks to keep tabs and navigate to places.
+
+### Tooltips
+
+![](/README_Assets/tooltips.gif)
+
+View the function and usage of each component through helpful tooltips.
+
+---
+
+Compared to the existing solutions, ForeFlame aims to integrate more comprehensive datasets to provide the high-accuracy predictions of fire occurrence probability. Designed by incorporating real-time feedback from fire-analysts from DNR, and with ML models run using [FarmVibes](https://github.com/microsoft/farmvibes-ai), it also provides an intuitive interface with high responsiveness.
