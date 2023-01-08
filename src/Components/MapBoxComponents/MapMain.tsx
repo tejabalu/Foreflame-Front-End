@@ -10,12 +10,7 @@ import { DailyRiskHighlights } from "../PredictionOverview";
 import { LayerSelection } from "./LayerSelection";
 import { filterFeaturesByDay } from "./mapUtilities";
 // import "./SearchBoxStyles.css";
-
-export interface ViewState {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-}
+import geojsonData from "../../../assembled_data2000largest_full.json";
 
 // @ts-ignore
 export const MAPBOX_TOKEN: string = process.env.NEXT_PUBLIC_MAP_BOX_TOKEN;
@@ -41,20 +36,16 @@ export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
   const [mapBounds, setMapBounds] = useState<mapboxgl.LngLatBounds>();
 
   useEffect(() => {
-    fetch("https://foreflame.eastus.cloudapp.azure.com/static/assembled_data2000largest_full.geojson")
-      .then((resp) => resp.json())
-      .then((json) => {
-        // TODO: validate the JSON data first
-        const features = json.features;
-        const startTime = features[0].properties.time;
-        const endTime = features[features.length - 1].properties.time;
-        console.log(new Date(startTime), new Date(endTime), "first download test");
+    console.log(geojsonData);
+    const features = geojsonData.features;
+    const startTime = features[0].properties.time;
+    const endTime = features[features.length - 1].properties.time;
+    console.log(new Date(startTime), new Date(endTime), "first download test");
 
-        setTimeRange([startTime, endTime]);
-        setFirePredictions(json);
-        setSelectedTime(endTime);
-      })
-      .catch((err) => console.error("Could not load data", err));
+    setTimeRange([startTime, endTime]);
+    // @ts-ignore
+    setFirePredictions(geojsonData);
+    setSelectedTime(endTime);
   }, []);
 
   const data = useMemo(() => {
