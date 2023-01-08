@@ -36,11 +36,9 @@ export function MapMain({ setBookmarks, selectedBookmarks }: MapMainInterface) {
   const [mapBounds, setMapBounds] = useState<mapboxgl.LngLatBounds>();
 
   useEffect(() => {
-    console.log(geojsonData);
     const features = geojsonData.features;
     const startTime = features[0].properties.time;
     const endTime = features[features.length - 1].properties.time;
-    console.log(new Date(startTime), new Date(endTime), "first download test");
 
     setTimeRange([startTime, endTime]);
     // @ts-ignore
