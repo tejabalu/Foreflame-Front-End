@@ -219,39 +219,26 @@ export default function MapboxComponent({
           allDays={isAllDays}
           setSelectedTime={setSelectedTime}
           setIsAllDays={setIsAllDays}
-          isHistorical={data?.features[0] && data?.features[0].properties.mag >= 0 ? false : true}
+          isHistorical={!(data?.features[0] && data?.features[0].properties.mag >= 0)}
         />
       </Flex>
     </PlayContext.Provider>
   );
 }
 
-function PopUpFunction(
-  popupFeatures: {
-    show: boolean;
-    lng: number;
-    lat: number;
-    mag: number;
-    time: number;
-    temp: number;
-    precipitation: number;
-    wind_speed: number;
-    soil_moisture: number;
-  },
-  setPopupFeatures: React.Dispatch<
-    React.SetStateAction<{
-      show: boolean;
-      lng: number;
-      lat: number;
-      mag: number;
-      time: number;
-      temp: number;
-      precipitation: number;
-      wind_speed: number;
-      soil_moisture: number;
-    }>
-  >
-) {
+interface popUpInterface {
+  show: boolean;
+  lng: number;
+  lat: number;
+  mag: number;
+  time: number;
+  temp: number;
+  precipitation: number;
+  wind_speed: number;
+  soil_moisture: number;
+}
+
+function PopUpFunction(popupFeatures: popUpInterface, setPopupFeatures: React.Dispatch<React.SetStateAction<popUpInterface>>) {
   return (
     <Popup
       longitude={popupFeatures.lng}

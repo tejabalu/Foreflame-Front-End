@@ -62,57 +62,6 @@ export function LayerSelection(props: { setMapTheme: React.Dispatch<React.SetSta
               </RadioGroup>
             </AccordionPanel>
           </AccordionItem>
-
-          {/* <AccordionItem border={"none"} defaultChecked={true}>
-            <ToggleButton text="Vegetation" />
-            <AccordionPanel pb={4}>
-              <VStack alignItems={"flex-start"}>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Canopy cover
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Ground cover
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Tree Height
-                </Checkbox>
-              </VStack>
-            </AccordionPanel>
-          </AccordionItem>
-
-          <AccordionItem border={"none"}>
-            <ToggleButton text={"Fuel Density"} />
-            <AccordionPanel pb={4}>
-              <VStack alignItems={"flex-start"}>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Grass and Grass Dominated
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Shrub Fields
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Timber Litter
-                </Checkbox>
-              </VStack>
-            </AccordionPanel>
-          </AccordionItem>
-
-          <AccordionItem border={"none"}>
-            <ToggleButton text={"Weather Conditions"} />
-            <AccordionPanel pb={4}>
-              <VStack alignItems={"flex-start"}>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Wind
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Temperature
-                </Checkbox>
-                <Checkbox color={"white"} colorScheme={"whiteAlpha"}>
-                  Humidity
-                </Checkbox>
-              </VStack>
-            </AccordionPanel>
-          </AccordionItem> */}
         </Accordion>
       </Box>
     </Flex>

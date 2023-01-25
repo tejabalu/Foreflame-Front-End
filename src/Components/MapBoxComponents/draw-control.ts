@@ -1,6 +1,5 @@
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
-
 import { doc, getDoc } from "firebase/firestore";
 import type { ControlPosition, MapRef } from "react-map-gl";
 
